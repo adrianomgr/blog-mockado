@@ -1,0 +1,107 @@
+<div class="sing-up-wrapper">
+  <p-card class="sing-up-card">
+    <ng-template pTemplate="header">
+      <div class="card-header">
+        <h1>Cadastrar</h1>
+      </div>
+    </ng-template>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
+      <div class="my-8">
+        <p-floatlabel>
+          <input
+            pInputText
+            class="w-full"
+            id="name"
+            formControlName="name"
+            [class.ng-invalid]="signupForm.get('name')?.invalid && signupForm.get('name')?.touched"
+          />
+          <label for="name">Nome</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="my-8">
+        <p-floatlabel>
+          <input
+            pInputText
+            class="w-full"
+            id="username"
+            formControlName="username"
+            [class.ng-invalid]="
+              signupForm.get('username')?.invalid && signupForm.get('username')?.touched
+            "
+          />
+          <label for="username">Usuário</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="my-8">
+        <p-floatlabel>
+          <input
+            pInputText
+            class="w-full"
+            id="email"
+            type="email"
+            formControlName="email"
+            [class.ng-invalid]="
+              signupForm.get('email')?.invalid && signupForm.get('email')?.touched
+            "
+          />
+          <label for="email">Email</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="my-8">
+        <p-floatlabel>
+          <p-password
+            class="block w-full"
+            inputId="password"
+            formControlName="password"
+            [feedback]="true"
+            [toggleMask]="true"
+            inputStyleClass="w-full"
+            [class.ng-invalid]="
+              signupForm.get('password')?.invalid && signupForm.get('password')?.touched
+            "
+          ></p-password>
+          <label for="password">Senha</label>
+        </p-floatlabel>
+      </div>
+
+      <div class="my-8">
+        <p-floatlabel>
+          <p-password
+            class="block w-full"
+            inputId="confirmPassword"
+            formControlName="confirmPassword"
+            [feedback]="false"
+            [toggleMask]="true"
+            inputStyleClass="w-full"
+            [class.ng-invalid]="
+              (signupForm.get('confirmPassword')?.invalid &&
+                signupForm.get('confirmPassword')?.touched) ||
+              (!passwordsMatch() && signupForm.get('confirmPassword')?.touched)
+            "
+          ></p-password>
+          <label for="confirmPassword">Confirmar Senha</label>
+        </p-floatlabel>
+      </div>
+
+      <p-button
+        type="submit"
+        label="{{ isLoading ? 'Carregando...' : 'Criar Conta' }}"
+        [disabled]="isLoading || !signupForm.valid || !passwordsMatch()"
+        [loading]="isLoading"
+        icon="pi pi-user-plus"
+        styleClass="w-full"
+        severity="primary"
+      ></p-button>
+    </form>
+
+    <ng-template pTemplate="footer">
+      <div class="signup-footer">
+        <p>Já tem uma conta? <a href="login">Entrar</a></p>
+      </div>
+    </ng-template>
+  </p-card>
+</div>

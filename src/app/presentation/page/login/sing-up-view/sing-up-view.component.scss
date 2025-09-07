@@ -1,0 +1,25 @@
+.sing-up-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, var(--p-primary-50), var(--p-surface-0));
+  color: var(--p-text-color);
+}
+
+.sing-up-card {
+  width: 420px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.card-header {
+  text-align: center;
+  padding: 1.25rem 1rem 0.5rem;
+}
+.card-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
