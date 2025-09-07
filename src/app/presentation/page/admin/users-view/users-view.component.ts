@@ -1,4 +1,4 @@
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -11,16 +11,8 @@ import { PasswordModule } from 'primeng/password';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: 'admin' | 'editor' | 'subscriber';
-  status: 'active' | 'inactive';
-  createdAt: Date;
-  lastLogin: Date | null;
-}
+import { UserFacade } from '../../../../abstraction/user.facade';
+import { User } from '../../../../domain/interface/user.interface';
 
 @Component({
   selector: 'app-users-view',
@@ -37,9 +29,8 @@ interface User {
     TagModule,
     TooltipModule,
     AvatarModule,
-    DatePipe,
   ],
-  providers: [MessageService, ConfirmationService],
+  providers: [MessageService, ConfirmationService, UserFacade],
   template: `
     <div class="users-management">
       <div class="page-header">
@@ -101,28 +92,12 @@ interface User {
                   ></p-tag>
                 </td>
                 <td>
-                  <p-tag
-                    [value]="user.status === 'active' ? 'Ativo' : 'Inativo'"
-                    [severity]="user.status === 'active' ? 'success' : 'danger'"
-                  ></p-tag>
-                </td>
-                <td>
-                  {{ user.lastLogin ? (user.lastLogin | date : 'dd/MM/yyyy HH:mm') : 'Nunca' }}
-                </td>
-                <td>
                   <p-button
                     icon="pi pi-pencil"
                     severity="info"
                     [text]="true"
                     (onClick)="editUser(user)"
                     title="Editar"
-                  ></p-button>
-                  <p-button
-                    [icon]="user.status === 'active' ? 'pi pi-ban' : 'pi pi-check'"
-                    severity="secondary"
-                    [text]="true"
-                    (onClick)="toggleUserStatus(user)"
-                    [title]="user.status === 'active' ? 'Desativar' : 'Ativar'"
                   ></p-button>
                   <p-button
                     icon="pi pi-trash"
@@ -199,57 +174,51 @@ interface User {
   styleUrl: './users-view.component.scss',
 })
 export class UsersViewComponent implements OnInit {
-  users: User[] = [
-    {
-      id: 1,
-      name: 'João Silva',
-      email: 'joao.silva@email.com',
-      role: 'admin',
-      status: 'active',
-      createdAt: new Date('2024-01-01'),
-      lastLogin: new Date('2024-01-15'),
-    },
-    {
-      id: 2,
-      name: 'Maria Santos',
-      email: 'maria.santos@email.com',
-      role: 'editor',
-      status: 'active',
-      createdAt: new Date('2024-01-05'),
-      lastLogin: new Date('2024-01-14'),
-    },
-    {
-      id: 3,
-      name: 'Pedro Costa',
-      email: 'pedro.costa@email.com',
-      role: 'subscriber',
-      status: 'inactive',
-      createdAt: new Date('2024-01-10'),
-      lastLogin: null,
-    },
-  ];
-
-  displayDialog: boolean = false;
+  users: User[] = [];
+  loading = false;
+  displayDialog = false;
   userForm!: FormGroup;
+  isEditMode = false;
   selectedUser: User | null = null;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly messageService: MessageService,
-    private readonly confirmationService: ConfirmationService
+    private readonly confirmationService: ConfirmationService,
+    private readonly userFacade: UserFacade
   ) {}
 
   ngOnInit() {
     this.initForm();
+    this.loadUsers();
   }
 
   private initForm() {
     this.userForm = this.fb.group({
       name: ['', Validators.required],
+      username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      role: ['subscriber', Validators.required],
-      status: ['active', Validators.required],
+      role: ['author', Validators.required],
       password: ['', Validators.required],
+    });
+  }
+
+  private loadUsers() {
+    this.loading = true;
+    this.userFacade.getAllUsers().subscribe({
+      next: (users) => {
+        this.users = users;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar usuários:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Erro ao carregar usuários',
+        });
+        this.loading = false;
+      },
     });
   }
 
@@ -262,66 +231,18 @@ export class UsersViewComponent implements OnInit {
       .substring(0, 2);
   }
 
-  getRoleLabel(role: string): string {
-    const roleMap: { [key: string]: string } = {
-      admin: 'Admin',
-      editor: 'Editor',
-      subscriber: 'Assinante',
-    };
-    return roleMap[role] || role;
-  }
-
-  getRoleSeverity(role: string): string {
-    const severityMap: { [key: string]: string } = {
-      admin: 'danger',
-      editor: 'warning',
-      subscriber: 'info',
-    };
-    return severityMap[role] || 'info';
-  }
-
-  showCreateDialog() {
-    this.selectedUser = null;
-    this.userForm.reset();
-    this.userForm.patchValue({
-      role: 'subscriber',
-      status: 'active',
-    });
-    this.userForm.get('password')?.setValidators([Validators.required]);
-    this.userForm.get('password')?.updateValueAndValidity();
-    this.displayDialog = true;
-  }
-
   editUser(user: User) {
     this.selectedUser = user;
     this.userForm.patchValue({
       name: user.name,
+      username: user.username,
       email: user.email,
       role: user.role,
-      status: user.status,
     });
     this.userForm.get('password')?.clearValidators();
     this.userForm.get('password')?.updateValueAndValidity();
+    this.isEditMode = true;
     this.displayDialog = true;
-  }
-
-  toggleUserStatus(user: User) {
-    const newStatus = user.status === 'active' ? 'inactive' : 'active';
-    const action = newStatus === 'active' ? 'ativar' : 'desativar';
-
-    this.confirmationService.confirm({
-      message: `Tem certeza que deseja ${action} o usuário "${user.name}"?`,
-      header: 'Confirmar Ação',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        user.status = newStatus;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: `Usuário ${action === 'ativar' ? 'ativado' : 'desativado'} com sucesso`,
-        });
-      },
-    });
   }
 
   deleteUser(user: User) {
@@ -330,61 +251,127 @@ export class UsersViewComponent implements OnInit {
       header: 'Confirmar Exclusão',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.users = this.users.filter((u) => u.id !== user.id);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: 'Usuário deletado com sucesso',
+        this.userFacade.deleteUser(user.id).subscribe({
+          next: () => {
+            this.loadUsers();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Usuário deletado com sucesso',
+            });
+          },
+          error: (error) => {
+            console.error('Erro ao deletar usuário:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Erro ao deletar usuário',
+            });
+          },
         });
       },
     });
+  }
+
+  showCreateDialog() {
+    this.selectedUser = null;
+    this.isEditMode = false;
+    this.userForm.reset();
+    this.userForm.patchValue({
+      role: 'author',
+    });
+    this.userForm.get('password')?.setValidators([Validators.required]);
+    this.userForm.get('password')?.updateValueAndValidity();
+    this.displayDialog = true;
   }
 
   saveUser() {
     if (this.userForm.valid) {
       const formValue = this.userForm.value;
 
-      if (this.selectedUser) {
+      if (this.isEditMode && this.selectedUser) {
         // Editar usuário existente
-        const index = this.users.findIndex((u) => u.id === this.selectedUser!.id);
-        this.users[index] = {
-          ...this.selectedUser,
+        const updateRequest = {
           name: formValue.name,
+          username: formValue.username,
           email: formValue.email,
           role: formValue.role,
-          status: formValue.status,
         };
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: 'Usuário atualizado com sucesso',
+
+        this.userFacade.updateUser(this.selectedUser.id, updateRequest).subscribe({
+          next: () => {
+            this.loadUsers();
+            this.hideDialog();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Usuário atualizado com sucesso',
+            });
+          },
+          error: (error) => {
+            console.error('Erro ao atualizar usuário:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Erro ao atualizar usuário',
+            });
+          },
         });
       } else {
         // Criar novo usuário
-        const newUser: User = {
-          id: Math.max(...this.users.map((u) => u.id)) + 1,
+        const createRequest = {
           name: formValue.name,
+          username: formValue.username,
           email: formValue.email,
+          password: formValue.password,
           role: formValue.role,
-          status: formValue.status,
-          createdAt: new Date(),
-          lastLogin: null,
         };
-        this.users.push(newUser);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: 'Usuário criado com sucesso',
+
+        this.userFacade.createUser(createRequest).subscribe({
+          next: () => {
+            this.loadUsers();
+            this.hideDialog();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Usuário criado com sucesso',
+            });
+          },
+          error: (error) => {
+            console.error('Erro ao criar usuário:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Erro ao criar usuário',
+            });
+          },
         });
       }
-
-      this.hideDialog();
     }
   }
 
   hideDialog() {
     this.displayDialog = false;
     this.selectedUser = null;
+    this.isEditMode = false;
     this.userForm.reset();
+  }
+
+  getRoleLabel(role: any): string {
+    const roleMap: { [key: string]: string } = {
+      admin: 'Admin',
+      editor: 'Editor',
+      author: 'Autor',
+    };
+    return roleMap[role] || role;
+  }
+
+  getRoleSeverity(role: any): 'success' | 'info' | 'warning' | 'danger' {
+    const severityMap: { [key: string]: 'success' | 'info' | 'warning' | 'danger' } = {
+      admin: 'danger',
+      editor: 'warning',
+      author: 'info',
+    };
+    return severityMap[role] || 'info';
   }
 }

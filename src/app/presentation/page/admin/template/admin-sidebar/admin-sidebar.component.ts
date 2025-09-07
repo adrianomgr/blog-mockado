@@ -19,40 +19,12 @@ export class AdminSidebarComponent {
     {
       label: 'Conteúdo',
       icon: 'pi pi-file-edit',
-      expanded: true,
-      items: [
-        {
-          label: 'Posts',
-          icon: 'pi pi-file-edit',
-          routerLink: ['/admin/posts'],
-        },
-        {
-          label: 'Categorias',
-          icon: 'pi pi-tags',
-          routerLink: ['/admin/categories'],
-        },
-      ],
+      routerLink: ['/admin/posts'],
     },
     {
       label: 'Usuários',
       icon: 'pi pi-users',
       routerLink: ['/admin/users'],
-    },
-    {
-      label: 'Configurações',
-      icon: 'pi pi-cog',
-      items: [
-        {
-          label: 'Geral',
-          icon: 'pi pi-sliders-h',
-          routerLink: ['/admin/settings/general'],
-        },
-        {
-          label: 'SEO',
-          icon: 'pi pi-search',
-          routerLink: ['/admin/settings/seo'],
-        },
-      ],
     },
     {
       label: 'Voltar ao Blog',

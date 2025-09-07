@@ -6,6 +6,12 @@
 
   <p-card class="posts-table-card">
     <ng-template pTemplate="content">
+      @if (loading) {
+      <div class="loading-container">
+        <i class="pi pi-spin pi-spinner loading-spinner"></i>
+        <p>Carregando posts...</p>
+      </div>
+      } @else {
       <p-table
         [value]="posts"
         [paginator]="true"
@@ -69,6 +75,7 @@
           </tr>
         </ng-template>
       </p-table>
+      }
     </ng-template>
   </p-card>
 

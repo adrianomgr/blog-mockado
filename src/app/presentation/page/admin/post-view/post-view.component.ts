@@ -11,15 +11,10 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  author: string;
-  status: 'published' | 'draft';
-  createdAt: Date;
-  tags: string[];
-}
+// Domain imports
+import { PostFacade } from '../../../../abstraction/post.facade';
+import { Post } from '../../../../domain/interface/post.interface';
+import { AuthService } from '../../../../infrastructure/api/auth.service';
 
 @Component({
   selector: 'app-post-view',
@@ -41,39 +36,42 @@ interface Post {
   styleUrl: './post-view.component.scss',
 })
 export class PostViewComponent implements OnInit {
-  posts: Post[] = [
-    {
-      id: 1,
-      title: 'Introdução ao Angular 17',
-      content: 'Conteúdo do post sobre Angular 17...',
-      author: 'João Silva',
-      status: 'published',
-      createdAt: new Date('2024-01-15'),
-      tags: ['angular', 'typescript', 'frontend'],
-    },
-    {
-      id: 2,
-      title: 'TypeScript para Iniciantes',
-      content: 'Guia completo sobre TypeScript...',
-      author: 'Maria Santos',
-      status: 'draft',
-      createdAt: new Date('2024-01-10'),
-      tags: ['typescript', 'javascript', 'programming'],
-    },
-  ];
-
+  posts: Post[] = [];
   displayDialog: boolean = false;
   postForm!: FormGroup;
   selectedPost: Post | null = null;
+  loading: boolean = false;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly messageService: MessageService,
-    private readonly confirmationService: ConfirmationService
+    private readonly confirmationService: ConfirmationService,
+    private readonly postFacade: PostFacade,
+    private readonly authService: AuthService
   ) {}
 
   ngOnInit() {
     this.initForm();
+    this.loadPosts();
+  }
+
+  private loadPosts() {
+    this.loading = true;
+    this.postFacade.getAllPosts().subscribe({
+      next: (posts) => {
+        this.posts = posts;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar posts:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Erro ao carregar posts',
+        });
+        this.loading = false;
+      },
+    });
   }
 
   private initForm() {
@@ -109,11 +107,23 @@ export class PostViewComponent implements OnInit {
       header: 'Confirmar Exclusão',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.posts = this.posts.filter((p) => p.id !== post.id);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: 'Post deletado com sucesso',
+        this.postFacade.deletePost(post.id).subscribe({
+          next: () => {
+            this.loadPosts(); // Recarregar a lista
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Post deletado com sucesso',
+            });
+          },
+          error: (error) => {
+            console.error('Erro ao deletar post:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Erro ao deletar post',
+            });
+          },
         });
       },
     });
@@ -123,42 +133,67 @@ export class PostViewComponent implements OnInit {
     if (this.postForm.valid) {
       const formValue = this.postForm.value;
       const tags = formValue.tags ? formValue.tags.split(',').map((tag: string) => tag.trim()) : [];
+      const currentUser = this.authService.getCurrentUser();
 
       if (this.selectedPost) {
         // Editar post existente
-        const index = this.posts.findIndex((p) => p.id === this.selectedPost!.id);
-        this.posts[index] = {
-          ...this.selectedPost,
+        const updateData = {
           title: formValue.title,
           content: formValue.content,
           status: formValue.status,
           tags,
         };
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: 'Post atualizado com sucesso',
+
+        this.postFacade.updatePost(this.selectedPost.id, updateData).subscribe({
+          next: () => {
+            this.loadPosts(); // Recarregar a lista
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Post atualizado com sucesso',
+            });
+            this.hideDialog();
+          },
+          error: (error) => {
+            console.error('Erro ao atualizar post:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Erro ao atualizar post',
+            });
+          },
         });
       } else {
         // Criar novo post
-        const newPost: Post = {
-          id: Math.max(...this.posts.map((p) => p.id)) + 1,
+        const newPostData = {
           title: formValue.title,
           content: formValue.content,
-          author: 'Admin',
           status: formValue.status,
-          createdAt: new Date(),
+          authorId: currentUser?.id || 1,
+          author: currentUser?.name || 'Admin',
           tags,
         };
-        this.posts.push(newPost);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Sucesso',
-          detail: 'Post criado com sucesso',
+
+        this.postFacade.createPost(newPostData).subscribe({
+          next: () => {
+            this.loadPosts(); // Recarregar a lista
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Post criado com sucesso',
+            });
+            this.hideDialog();
+          },
+          error: (error) => {
+            console.error('Erro ao criar post:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: 'Erro ao criar post',
+            });
+          },
         });
       }
-
-      this.hideDialog();
     }
   }
 

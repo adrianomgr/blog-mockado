@@ -12,66 +12,97 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
 
+// Services
+import { AuthService } from '../../../../infrastructure/api/auth.service';
+
 @Component({
-    selector: 'app-login-view',
-    standalone: true,
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        RouterModule,
-        ButtonModule,
-        InputTextModule,
-        PasswordModule,
-        CardModule,
-        ToastModule,
-        FloatLabelModule,
-    ],
-    providers: [MessageService],
-    templateUrl: './login-view.component.html',
-    styleUrls: ['./login-view.component.scss'],
+  selector: 'app-login-view',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    ButtonModule,
+    InputTextModule,
+    PasswordModule,
+    CardModule,
+    ToastModule,
+    FloatLabelModule,
+  ],
+  providers: [MessageService],
+  templateUrl: './login-view.component.html',
+  styleUrls: ['./login-view.component.scss'],
 })
 export class LoginViewComponent {
-    loginForm: FormGroup;
-    loading = false;
+  loginForm: FormGroup;
+  loading = false;
 
-    constructor(
-        private readonly formBuilder: FormBuilder,
-        private readonly router: Router,
-        private readonly messageService: MessageService,
-    ) {
-        this.loginForm = this.formBuilder.group({
-            username: ['', [Validators.required]],
-            password: ['', [Validators.required, Validators.minLength(6)]],
-        });
-    }
+  constructor(
+    private readonly formBuilder: FormBuilder,
+    private readonly router: Router,
+    private readonly messageService: MessageService,
+    private readonly authService: AuthService
+  ) {
+    this.loginForm = this.formBuilder.group({
+      username: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+    });
+  }
 
-    onSubmit(): void {
-        if (this.loginForm.valid) {
-            this.loading = true;
+  onSubmit(): void {
+    if (this.loginForm.valid) {
+      this.loading = true;
 
-            // Simulação de login
-            setTimeout(() => {
-                this.loading = false;
-                this.messageService.add({
-                    severity: 'success',
-                    summary: 'Sucesso',
-                    detail: 'Login realizado com sucesso!',
-                });
-                this.router.navigate(['/dashboard']);
-            }, 2000);
-        } else {
-            this.markFormGroupTouched();
+      const { username, password } = this.loginForm.value;
+
+      this.authService.login(username, password).subscribe({
+        next: (response) => {
+          this.loading = false;
+          if (response.success) {
             this.messageService.add({
-                severity: 'error',
-                summary: 'Erro',
-                detail: 'Por favor, preencha todos os campos obrigatórios.',
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Login realizado com sucesso!',
             });
-        }
-    }
 
-    private markFormGroupTouched(): void {
-        Object.keys(this.loginForm.controls).forEach((key) => {
-            this.loginForm.get(key)?.markAsTouched();
-        });
+            // Redirecionar baseado no role do usuário
+            const user = response.user;
+            if (user?.role === 'admin' || user?.role === 'editor') {
+              this.router.navigate(['/admin']);
+            } else {
+              this.router.navigate(['/blog']);
+            }
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: response.message || 'Erro ao fazer login',
+            });
+          }
+        },
+        error: (error) => {
+          this.loading = false;
+          console.error('Erro no login:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Credenciais inválidas ou erro no servidor',
+          });
+        },
+      });
+    } else {
+      this.markFormGroupTouched();
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Erro',
+        detail: 'Por favor, preencha todos os campos obrigatórios.',
+      });
     }
+  }
+
+  private markFormGroupTouched(): void {
+    Object.keys(this.loginForm.controls).forEach((key) => {
+      this.loginForm.get(key)?.markAsTouched();
+    });
+  }
 }

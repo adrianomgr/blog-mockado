@@ -4,11 +4,16 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 
 // PrimeNG imports
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
+import { ToastModule } from 'primeng/toast';
+
+// Services
+import { SignUpService } from '../../../../infrastructure/api/sign-up.service';
 
 @Component({
   selector: 'app-sing-up-view',
@@ -21,7 +26,9 @@ import { PasswordModule } from 'primeng/password';
     PasswordModule,
     CardModule,
     FloatLabelModule,
+    ToastModule,
   ],
+  providers: [MessageService],
   templateUrl: './sing-up-view.component.html',
   styleUrls: ['./sing-up-view.component.scss'],
 })
@@ -29,7 +36,12 @@ export class SingUpViewComponent {
   signupForm: FormGroup;
   isLoading = false;
 
-  constructor(private readonly formBuilder: FormBuilder, private readonly router: Router) {
+  constructor(
+    private readonly formBuilder: FormBuilder,
+    private readonly router: Router,
+    private readonly signUpService: SignUpService,
+    private readonly messageService: MessageService
+  ) {
     this.signupForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
       username: ['', [Validators.required, Validators.minLength(4)]],
@@ -43,13 +55,54 @@ export class SingUpViewComponent {
     if (this.signupForm.valid && this.passwordsMatch()) {
       this.isLoading = true;
 
-      // Simulação de cadastro
-      setTimeout(() => {
-        this.isLoading = false;
-        this.router.navigate(['/login']);
-      }, 2000);
+      const formData = this.signupForm.value;
+      const signUpData = {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        role: 'subscriber', // Role padrão para novos usuários
+      };
+
+      this.signUpService.signUp(signUpData).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          if (response.success) {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Conta criada com sucesso! Faça o login.',
+            });
+            setTimeout(() => {
+              this.router.navigate(['/login']);
+            }, 2000);
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Erro',
+              detail: response.message || 'Erro ao criar conta',
+            });
+          }
+        },
+        error: (error) => {
+          this.isLoading = false;
+          console.error('Erro no cadastro:', error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Erro ao criar conta. Tente novamente.',
+          });
+        },
+      });
     } else {
       this.markFormGroupTouched();
+      if (!this.passwordsMatch()) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'As senhas não coincidem.',
+        });
+      }
     }
   }
 
