@@ -1,0 +1,60 @@
+<div class="public-blog-container">
+  <header class="blog-header">
+    <div class="header-content">
+      <div class="logo-section">
+        <h1 class="blog-title">Blog</h1>
+        <p class="blog-subtitle">Compartilhando conhecimento</p>
+      </div>
+      <div class="header-actions">
+        <p-button
+          label="Login"
+          icon="pi pi-sign-in"
+          severity="primary"
+          routerLink="/login"
+          styleClass="login-btn"
+        ></p-button>
+      </div>
+    </div>
+  </header>
+
+  <div class="blog-content">
+    <div class="posts-grid">
+      @for (post of filteredPosts; track post.id) {
+      <p-card class="post-card">
+        <ng-template pTemplate="header">
+          <div class="post-meta">
+            <div class="author-info">
+              <p-avatar [label]="getAuthorInitials(post.author)" shape="circle"></p-avatar>
+              <span class="author-name">{{ post.author }}</span>
+            </div>
+            <span class="post-date">{{ post.date | date : 'dd/MM/yyyy' }}</span>
+          </div>
+        </ng-template>
+
+        <div class="post-content">
+          <h3 class="post-title">{{ post.title }}</h3>
+          <p class="post-excerpt">{{ post.excerpt }}</p>
+
+          <div class="post-tags">
+            @for (tag of post.tags; track tag) {
+            <p-tag [value]="tag" severity="info" class="mr-1 mb-1"></p-tag>
+            }
+          </div>
+        </div>
+      </p-card>
+      }
+    </div>
+
+    @if (filteredPosts.length === 0) {
+    <div class="no-posts">
+      <p>Nenhum post encontrado.</p>
+    </div>
+    }
+  </div>
+
+  <p-divider></p-divider>
+
+  <div class="blog-footer">
+    <p>© 2025 Blog. Todos os direitos reservados.</p>
+  </div>
+</div>
