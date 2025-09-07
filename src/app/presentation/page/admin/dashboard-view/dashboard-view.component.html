@@ -1,0 +1,102 @@
+<div class="dashboard-container">
+  <div class="page-header">
+    <h1>Dashboard</h1>
+    <p>Bem-vindo ao painel administrativo</p>
+  </div>
+
+  <div class="stats-grid">
+    <p-card class="stat-card">
+      <ng-template pTemplate="content">
+        <div class="stat-content">
+          <div class="stat-icon posts">
+            <i class="pi pi-file-edit"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ stats.totalPosts }}</h3>
+            <p>Total de Posts</p>
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+
+    <p-card class="stat-card">
+      <ng-template pTemplate="content">
+        <div class="stat-content">
+          <div class="stat-icon users">
+            <i class="pi pi-users"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ stats.totalUsers }}</h3>
+            <p>Usuários</p>
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+
+    <p-card class="stat-card">
+      <ng-template pTemplate="content">
+        <div class="stat-content">
+          <div class="stat-icon views">
+            <i class="pi pi-eye"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ stats.totalViews }}</h3>
+            <p>Visualizações</p>
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+
+    <p-card class="stat-card">
+      <ng-template pTemplate="content">
+        <div class="stat-content">
+          <div class="stat-icon comments">
+            <i class="pi pi-comments"></i>
+          </div>
+          <div class="stat-info">
+            <h3>{{ stats.totalComments }}</h3>
+            <p>Comentários</p>
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+  </div>
+
+  <div class="dashboard-content">
+    <div class="content-row">
+      <div class="chart-container">
+        <p-card>
+          <ng-template pTemplate="header">
+            <h3>Visualizações dos Últimos 7 Dias</h3>
+          </ng-template>
+          <ng-template pTemplate="content">
+            <div class="chart-placeholder">
+              <p>Gráfico será implementado aqui</p>
+            </div>
+          </ng-template>
+        </p-card>
+      </div>
+
+      <div class="recent-activity">
+        <p-card>
+          <ng-template pTemplate="header">
+            <h3>Atividade Recente</h3>
+          </ng-template>
+          <ng-template pTemplate="content">
+            <div class="activity-list">
+              @for (activity of recentActivities; track activity.id) {
+              <div class="activity-item">
+                <i [class]="activity.icon" [class.activity-icon]="true"></i>
+                <div class="activity-details">
+                  <p>{{ activity.description }}</p>
+                  <small>{{ activity.timestamp | date : 'short' }}</small>
+                </div>
+              </div>
+              }
+            </div>
+          </ng-template>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</div>

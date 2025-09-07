@@ -17,6 +17,11 @@ export const routes: Routes = [
             import('./presentation/page/login/login.routes').then((m) => m.loginRoutes),
     },
     {
+        path: 'admin',
+        loadChildren: () =>
+            import('./presentation/page/admin/admin.routes').then((m) => m.adminRoutes),
+    },
+    {
         path: '**',
         redirectTo: '/blog',
     },

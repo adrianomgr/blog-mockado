@@ -1,0 +1,121 @@
+<div class="post-management">
+  <div class="page-header">
+    <h1>Gerenciar Posts</h1>
+    <p-button label="Novo Post" icon="pi pi-plus" (onClick)="showCreateDialog()"></p-button>
+  </div>
+
+  <p-card class="posts-table-card">
+    <ng-template pTemplate="content">
+      <p-table
+        [value]="posts"
+        [paginator]="true"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} posts"
+        [globalFilterFields]="['title', 'author', 'status']"
+        #dt
+      >
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                pInputText
+                type="text"
+                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                placeholder="Buscar posts..."
+              />
+            </span>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Título</th>
+            <th>Autor</th>
+            <th>Status</th>
+            <th>Data</th>
+            <th>Ações</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-post>
+          <tr>
+            <td>{{ post.title }}</td>
+            <td>{{ post.author }}</td>
+            <td>
+              <p-tag
+                [value]="post.status === 'published' ? 'Publicado' : 'Rascunho'"
+                [severity]="post.status === 'published' ? 'success' : 'warning'"
+              ></p-tag>
+            </td>
+            <td>{{ post.createdAt | date : 'dd/MM/yyyy' }}</td>
+            <td>
+              <p-button
+                icon="pi pi-pencil"
+                severity="info"
+                [text]="true"
+                (onClick)="editPost(post)"
+                pTooltip="Editar"
+              ></p-button>
+              <p-button
+                icon="pi pi-trash"
+                severity="danger"
+                [text]="true"
+                (onClick)="deletePost(post)"
+                pTooltip="Deletar"
+              ></p-button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </ng-template>
+  </p-card>
+
+  <p-dialog
+    header="Gerenciar Post"
+    [(visible)]="displayDialog"
+    [modal]="true"
+    [style]="{ width: '800px' }"
+    [closable]="true"
+  >
+    <form [formGroup]="postForm" (ngSubmit)="savePost()">
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="title">Título *</label>
+          <input id="title" type="text" pInputText formControlName="title" class="w-full" />
+        </div>
+
+        <div class="field">
+          <label for="status">Status</label>
+          <select id="status" formControlName="status" class="p-inputtext w-full">
+            <option value="draft">Rascunho</option>
+            <option value="published">Publicado</option>
+          </select>
+        </div>
+
+        <div class="form-field full-width">
+          <label for="content">Conteúdo *</label>
+          <textarea id="content" formControlName="content" rows="10" class="w-full"></textarea>
+        </div>
+
+        <div class="form-field full-width">
+          <label for="tags">Tags (separadas por vírgula)</label>
+          <input
+            id="tags"
+            type="text"
+            pInputText
+            formControlName="tags"
+            class="w-full"
+            placeholder="javascript, angular, typescript"
+          />
+        </div>
+      </div>
+
+      <div class="dialog-footer">
+        <p-button label="Cancelar" severity="secondary" (onClick)="hideDialog()"></p-button>
+        <p-button label="Salvar" type="submit" [disabled]="postForm.invalid"></p-button>
+      </div>
+    </form>
+  </p-dialog>
+</div>

@@ -1,0 +1,38 @@
+<p-toolbar class="admin-header">
+  <ng-template pTemplate="start">
+    <div class="header-start">
+      <p-button
+        icon="pi pi-bars"
+        severity="secondary"
+        [text]="true"
+        class="mobile-menu-btn"
+        (onClick)="toggleMobileMenu()"
+      ></p-button>
+      <h2 class="header-title">Admin Dashboard</h2>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="end">
+    <div class="header-actions">
+      <p-button
+        icon="pi pi-bell"
+        severity="secondary"
+        [text]="true"
+        [badge]="'3'"
+        badgeClass="p-badge-danger"
+      ></p-button>
+
+      <div class="user-menu">
+        <p-avatar label="A" shape="circle" size="normal" styleClass="cursor-pointer"></p-avatar>
+        <span class="user-name">Admin</span>
+        <p-button
+          icon="pi pi-sign-out"
+          severity="secondary"
+          [text]="true"
+          (onClick)="logout()"
+          pTooltip="Sair"
+        ></p-button>
+      </div>
+    </div>
+  </ng-template>
+</p-toolbar>

@@ -1,0 +1,160 @@
+<div class="users-management">
+  <div class="page-header">
+    <h1>Gerenciar Usuários</h1>
+    <p-button label="Novo Usuário" icon="pi pi-user-plus" (onClick)="showCreateDialog()"></p-button>
+  </div>
+
+  <p-card class="users-table-card">
+    <ng-template pTemplate="content">
+      <p-table
+        [value]="users"
+        [paginator]="true"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuários"
+        [globalFilterFields]="['name', 'email', 'role']"
+        #dt
+      >
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                pInputText
+                type="text"
+                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                placeholder="Buscar usuários..."
+              />
+            </span>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+          <tr>
+            <th scope="col">Avatar</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Email</th>
+            <th scope="col">Função</th>
+            <th scope="col">Status</th>
+            <th scope="col">Último Login</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-user>
+          <tr>
+            <td>
+              <p-avatar
+                [label]="getUserInitials(user.name)"
+                shape="circle"
+                size="normal"
+              ></p-avatar>
+            </td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <p-tag
+                [value]="getRoleLabel(user.role)"
+                [severity]="getRoleSeverity(user.role)"
+              ></p-tag>
+            </td>
+            <td>
+              <p-tag
+                [value]="user.status === 'active' ? 'Ativo' : 'Inativo'"
+                [severity]="user.status === 'active' ? 'success' : 'danger'"
+              ></p-tag>
+            </td>
+            <td>{{ (user.lastLogin | date : 'dd/MM/yyyy HH:mm') || 'Nunca' }}</td>
+            <td>
+              <p-button
+                icon="pi pi-pencil"
+                severity="info"
+                [text]="true"
+                (onClick)="editUser(user)"
+                pTooltip="Editar"
+              ></p-button>
+              <p-button
+                [icon]="user.status === 'active' ? 'pi pi-ban' : 'pi pi-check'"
+                [severity]="user.status === 'active' ? 'warning' : 'success'"
+                [text]="true"
+                (onClick)="toggleUserStatus(user)"
+                [pTooltip]="user.status === 'active' ? 'Desativar' : 'Ativar'"
+              ></p-button>
+              <p-button
+                icon="pi pi-trash"
+                severity="danger"
+                [text]="true"
+                (onClick)="deleteUser(user)"
+                pTooltip="Deletar"
+              ></p-button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </ng-template>
+  </p-card>
+
+  <p-dialog
+    header="Gerenciar Usuário"
+    [(visible)]="displayDialog"
+    [modal]="true"
+    [style]="{ width: '600px' }"
+    [closable]="true"
+  >
+    <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="name">Nome Completo *</label>
+          <input id="name" type="text" pInputText formControlName="name" class="w-full" />
+        </div>
+
+        <div class="form-field">
+          <label for="email">Email *</label>
+          <input id="email" type="email" pInputText formControlName="email" class="w-full" />
+        </div>
+
+        <div class="form-field">
+          <label for="role">Função *</label>
+          <p-dropdown
+            id="role"
+            formControlName="role"
+            [options]="roleOptions"
+            optionLabel="label"
+            optionValue="value"
+            class="w-full"
+          ></p-dropdown>
+        </div>
+
+        <div class="form-field">
+          <label for="status">Status *</label>
+          <p-dropdown
+            id="status"
+            formControlName="status"
+            [options]="statusOptions"
+            optionLabel="label"
+            optionValue="value"
+            class="w-full"
+          ></p-dropdown>
+        </div>
+
+        @if (!selectedUser) {
+        <div class="form-field">
+          <label for="password">Senha *</label>
+          <p-password
+            id="password"
+            formControlName="password"
+            [feedback]="false"
+            [toggleMask]="true"
+            class="w-full"
+          ></p-password>
+        </div>
+        }
+      </div>
+
+      <div class="dialog-footer">
+        <p-button label="Cancelar" severity="secondary" (onClick)="hideDialog()"></p-button>
+        <p-button label="Salvar" type="submit" [disabled]="userForm.invalid"></p-button>
+      </div>
+    </form>
+  </p-dialog>
+</div>
