@@ -39,6 +39,7 @@ interface User {
     AvatarModule,
     DatePipe,
   ],
+  providers: [MessageService, ConfirmationService],
   template: `
     <div class="users-management">
       <div class="page-header">
