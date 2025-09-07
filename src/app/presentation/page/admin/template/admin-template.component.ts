@@ -7,11 +7,7 @@ import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
   selector: 'app-admin-template',
   standalone: true,
   imports: [AdminLayoutComponent, ToastModule, ConfirmDialogModule],
-  template: `
-    <app-admin-layout></app-admin-layout>
-    <p-toast></p-toast>
-    <p-confirmDialog></p-confirmDialog>
-  `,
+  templateUrl: './admin-template.component.html',
   styleUrl: './admin-template.component.scss',
 })
 export class AdminTemplateComponent {}
