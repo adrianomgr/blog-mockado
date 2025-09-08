@@ -94,7 +94,7 @@
         <td>{{ user.username }}</td>
         <td>
           <code class="bg-gray-100 px-2 py-1 rounded text-xs">
-            {{ getTestPassword(user.username) }}
+            {{ user.password }}
           </code>
         </td>
         <td>
@@ -110,7 +110,7 @@
             label="Usar"
             icon="pi pi-arrow-right"
             size="small"
-            (onClick)="useTestCredentials(user.username, getTestPassword(user.username))"
+            (onClick)="useTestCredentials(user.username, user.password)"
           ></p-button>
         </td>
       </tr>
@@ -127,5 +127,3 @@
     </ul>
   </div>
 </p-dialog>
-
-<p-toast></p-toast>

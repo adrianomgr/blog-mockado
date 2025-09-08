@@ -20,9 +20,7 @@ export class SignUpFacadeService {
 
     return this.userService.createUser(createUserRequest).pipe(
       map((response: UserResponse) => UserResponse.converter(response)),
-      catchError((erro: HttpErrorResponse) =>
-        throwError(() => ErroResponse.converterComToasty(erro))
-      )
+      catchError((erro: HttpErrorResponse) => throwError(() => ErroResponse.converter(erro)))
     );
   }
 }

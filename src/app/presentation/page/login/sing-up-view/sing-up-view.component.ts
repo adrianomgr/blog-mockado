@@ -78,23 +78,16 @@ export class SingUpViewComponent {
 
       const createUser = new UserCreate(username, password, email, role, name);
 
-      this.signUpFacade.createUser(createUser).subscribe({
-        next: () => {
-          this.isLoading = false;
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: 'Conta criada com sucesso! Faça o login.',
-          });
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 200);
-        },
-        error: (error) => {
-          this.isLoading = false;
-          console.error('Erro no cadastro:', error);
-          // Erro já foi tratado pelo facade com toast
-        },
+      this.signUpFacade.createUser(createUser).subscribe(() => {
+        this.isLoading = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Conta criada com sucesso! Faça o login.',
+        });
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 200);
       });
     } else {
       this.markFormGroupTouched();

@@ -6,6 +6,7 @@ export class UserResponse {
   id!: number;
   username!: string;
   email!: string;
+  password?: string; // para fins de teste
   role!: string;
   name!: string;
   createdAt?: string | Date;
@@ -15,6 +16,7 @@ export class UserResponse {
       id: item.id,
       username: item.username,
       email: item.email,
+      password: item.password,
       role: item.role as ProfileEnum,
       name: item.name,
       createdAt: item.createdAt,
@@ -26,6 +28,7 @@ export class UserResponse {
       id: dados.id,
       username: dados.username,
       email: dados.email,
+      password: dados.password,
       role: dados.role as ProfileEnum,
       name: dados.name,
       createdAt: dados.createdAt,

@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { PostFacadeService } from '@app/abstraction/post.facade.service';
+import { Post } from '@app/domain/model/post';
+import { PostCreate } from '@app/domain/model/post-create';
+import { UpdatePostRequest } from '@app/infrastructure/contract/request/update-post.request';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -11,14 +15,8 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 
-// Domain imports
-import { PostFacade } from '@app/abstraction/post.facade';
-import { Post } from '@app/domain/interface/post.interface';
-import { AuthApiService } from '@app/infrastructure/api/auth.api.service';
-
 @Component({
   selector: 'app-post-view',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -46,8 +44,7 @@ export class PostViewComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly messageService: MessageService,
     private readonly confirmationService: ConfirmationService,
-    private readonly postFacade: PostFacade,
-    private readonly authService: AuthApiService
+    private readonly postFacade: PostFacadeService
   ) {}
 
   ngOnInit() {
@@ -58,11 +55,11 @@ export class PostViewComponent implements OnInit {
   private loadPosts() {
     this.loading = true;
     this.postFacade.getAllPosts().subscribe({
-      next: (posts) => {
+      next: (posts: Post[]) => {
         this.posts = posts;
         this.loading = false;
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Erro ao carregar posts:', error);
         this.messageService.add({
           severity: 'error',
@@ -107,23 +104,13 @@ export class PostViewComponent implements OnInit {
       header: 'Confirmar Exclusão',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.postFacade.deletePost(post.id).subscribe({
-          next: () => {
-            this.loadPosts(); // Recarregar a lista
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Sucesso',
-              detail: 'Post deletado com sucesso',
-            });
-          },
-          error: (error) => {
-            console.error('Erro ao deletar post:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Erro',
-              detail: 'Erro ao deletar post',
-            });
-          },
+        this.postFacade.deletePost(post.id).subscribe(() => {
+          this.loadPosts();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Post deletado com sucesso',
+          });
         });
       },
     });
@@ -133,65 +120,42 @@ export class PostViewComponent implements OnInit {
     if (this.postForm.valid) {
       const formValue = this.postForm.value;
       const tags = formValue.tags ? formValue.tags.split(',').map((tag: string) => tag.trim()) : [];
-      const currentUser = this.authService.getCurrentUser();
 
       if (this.selectedPost) {
         // Editar post existente
-        const updateData = {
+        const updateRequest = new UpdatePostRequest({
           title: formValue.title,
           content: formValue.content,
           status: formValue.status,
           tags,
-        };
+        });
 
-        this.postFacade.updatePost(this.selectedPost.id, updateData).subscribe({
-          next: () => {
-            this.loadPosts(); // Recarregar a lista
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Sucesso',
-              detail: 'Post atualizado com sucesso',
-            });
-            this.hideDialog();
-          },
-          error: (error) => {
-            console.error('Erro ao atualizar post:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Erro',
-              detail: 'Erro ao atualizar post',
-            });
-          },
+        this.postFacade.updatePost(this.selectedPost.id, updateRequest).subscribe(() => {
+          this.loadPosts();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Post atualizado com sucesso',
+          });
+          this.hideDialog();
         });
       } else {
         // Criar novo post
-        const newPostData = {
+        const postCreate = new PostCreate({
           title: formValue.title,
           content: formValue.content,
           status: formValue.status,
-          authorId: currentUser?.id || 1,
-          author: currentUser?.name || 'Admin',
           tags,
-        };
+        });
 
-        this.postFacade.createPost(newPostData).subscribe({
-          next: () => {
-            this.loadPosts(); // Recarregar a lista
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Sucesso',
-              detail: 'Post criado com sucesso',
-            });
-            this.hideDialog();
-          },
-          error: (error) => {
-            console.error('Erro ao criar post:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Erro',
-              detail: 'Erro ao criar post',
-            });
-          },
+        this.postFacade.createPost(postCreate).subscribe(() => {
+          this.loadPosts(); // Recarregar a lista
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Post criado com sucesso',
+          });
+          this.hideDialog();
         });
       }
     }

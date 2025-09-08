@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HeaderFacadeService } from '@app/abstraction/header.facade.service';
 import { User } from '@app/domain/model/user';
-import { NotificationBellComponent } from '@app/presentation/components/notification-bell.component';
+import { NotificationBellComponent } from '@app/presentation/components/notification-bell/notification-bell.component';
 import { ConfirmationService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';

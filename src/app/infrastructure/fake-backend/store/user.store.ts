@@ -1,18 +1,29 @@
 import { Injectable } from '@angular/core';
 import { User } from '@app/domain/model/user';
-import * as UsersMock from '@app/infrastructure/mock/users.mock.json';
+import { UsersMock } from '@app/infrastructure/mock/users.mock';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserStore {
-  private readonly usersSubject = new BehaviorSubject<User[]>(UsersMock as User[]);
+  private readonly usersSubject = new BehaviorSubject<User[]>(UsersMock);
 
   private readonly users$ = this.usersSubject.asObservable();
 
+  constructor() {
+    console.log('🏪 UserStore inicializando...');
+    console.log('📦 UsersMock importado:', UsersMock);
+    console.log('📦 Tipo do UsersMock:', typeof UsersMock);
+    console.log('📦 É array?', Array.isArray(UsersMock));
+    console.log('👥 Usuários no BehaviorSubject:', this.usersSubject.value);
+    console.log('📊 Total de usuários:', this.usersSubject.value?.length || 0);
+  }
+
   get currentUsers(): User[] {
-    return this.usersSubject.value;
+    const users = this.usersSubject.value;
+    console.log('🔍 getCurrentUsers chamado, retornando:', users);
+    return users;
   }
 
   // Método para adicionar um novo usuário

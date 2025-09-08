@@ -35,8 +35,7 @@
             <th scope="col">Nome</th>
             <th scope="col">Email</th>
             <th scope="col">Função</th>
-            <th scope="col">Status</th>
-            <th scope="col">Último Login</th>
+            <th scope="col">Data da criação</th>
             <th scope="col">Ações</th>
           </tr>
         </ng-template>
@@ -58,13 +57,7 @@
                 [severity]="getRoleSeverity(user.role)"
               ></p-tag>
             </td>
-            <td>
-              <p-tag
-                [value]="user.status === 'active' ? 'Ativo' : 'Inativo'"
-                [severity]="user.status === 'active' ? 'success' : 'danger'"
-              ></p-tag>
-            </td>
-            <td>{{ (user.lastLogin | date : 'dd/MM/yyyy HH:mm') || 'Nunca' }}</td>
+            <td>{{ formatDate(user.createdAt) }}</td>
             <td>
               <p-button
                 icon="pi pi-pencil"
@@ -72,13 +65,6 @@
                 [text]="true"
                 (onClick)="editUser(user)"
                 pTooltip="Editar"
-              ></p-button>
-              <p-button
-                [icon]="user.status === 'active' ? 'pi pi-ban' : 'pi pi-check'"
-                [severity]="user.status === 'active' ? 'warning' : 'success'"
-                [text]="true"
-                (onClick)="toggleUserStatus(user)"
-                [pTooltip]="user.status === 'active' ? 'Desativar' : 'Ativar'"
               ></p-button>
               <p-button
                 icon="pi pi-trash"
@@ -115,26 +101,12 @@
 
         <div class="form-field">
           <label for="role">Função *</label>
-          <p-dropdown
-            id="role"
-            formControlName="role"
-            [options]="roleOptions"
-            optionLabel="label"
-            optionValue="value"
-            class="w-full"
-          ></p-dropdown>
-        </div>
-
-        <div class="form-field">
-          <label for="status">Status *</label>
-          <p-dropdown
-            id="status"
-            formControlName="status"
-            [options]="statusOptions"
-            optionLabel="label"
-            optionValue="value"
-            class="w-full"
-          ></p-dropdown>
+          <select id="role" formControlName="role" class="p-inputtext w-full">
+            <option value="admin">Administrador</option>
+            <option value="editor">Editor</option>
+            <option value="author">Autor</option>
+            <option value="subscriber">Assinante</option>
+          </select>
         </div>
 
         @if (!selectedUser) {

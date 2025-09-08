@@ -37,7 +37,7 @@ export class AuthApiService {
       tap((response) => {
         if (response.success && response.token && response.user) {
           this.setToken(response.token);
-          this.currentUserSubject.next(LoginResponse.converter(response).user);
+          this.currentUserSubject.next(LoginResponse.converter(response).user!);
           this.isAuthenticatedSubject.next(true);
         }
       })

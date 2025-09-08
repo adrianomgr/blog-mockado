@@ -3,7 +3,7 @@ import { Constants } from '@app/constants';
 import { NotificationSeverityEnum } from '@app/domain/enum/notification-severity.enum';
 import { NotificationTypeEnum } from '@app/domain/enum/notification-type.enum';
 import { Notification } from '@app/domain/model/notification';
-import * as NotificationsMock from '@app/infrastructure/mock/notifications.mock.json';
+import { NotificationsMock } from '@app/infrastructure/mock/notifications.mock';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({

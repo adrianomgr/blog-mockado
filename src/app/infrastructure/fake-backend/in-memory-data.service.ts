@@ -139,7 +139,7 @@ export class InMemoryDataService implements InMemoryDbService {
     const posts = this.postStore.currentPosts;
 
     if (reqInfo.id) {
-      const post = posts.find((p: any) => p.id === +reqInfo.id);
+      const post = posts.find((p) => p.id === +reqInfo.id);
       return this.createResponse(
         reqInfo,
         post ? 200 : 404,
@@ -219,15 +219,14 @@ export class InMemoryDataService implements InMemoryDbService {
   // === LOGIN HANDLER ===
   private handleLogin(reqInfo: RequestInfo): Observable<any> {
     const body = reqInfo.utils.getJsonBody(reqInfo.req);
-    const { usuario, senha } = body;
+    const { username, password } = body;
 
-    // Buscar usuário nos dados do UserStore
     const user = this.userStore.currentUsers.find(
-      (u: any) => (u.username === usuario || u.email === usuario) && u.password === senha
+      (u) => (u.username === username || u.email === username) && u.password === password
     );
 
     if (user) {
-      // Simular JWT token (normalmente seria gerado no backend)
+      // Simular JWT token (seria gerado no backend)
       const token = this.generateFakeJWT(user);
 
       const response = {
@@ -246,7 +245,7 @@ export class InMemoryDataService implements InMemoryDbService {
     } else {
       return this.createResponse(reqInfo, 401, {
         success: false,
-        message: 'Credenciais inválidas',
+        message: 'Credenciais inválidas2',
       });
     }
   }
@@ -265,7 +264,7 @@ export class InMemoryDataService implements InMemoryDbService {
         exp: Math.floor(Date.now() / 1000) + 60 * 60, // 1 hora
       })
     );
-    const signature = btoa('fake-signature'); // Em produção seria uma assinatura real
+    const signature = btoa('fake-signature');
 
     return `${header}.${payload}.${signature}`;
   }

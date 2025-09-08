@@ -15,9 +15,7 @@ export class NotificationFacadeService {
   getNotifications(): Observable<Notification[]> {
     return this.notificationService.getNotifications().pipe(
       map(NotificationResponse.converter),
-      catchError((erro: HttpErrorResponse) =>
-        throwError(() => ErroResponse.converterComToasty(erro))
-      )
+      catchError((erro: HttpErrorResponse) => throwError(() => ErroResponse.converter(erro)))
     );
   }
 }

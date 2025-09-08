@@ -35,17 +35,12 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.notificationFacade.getNotifications().subscribe((notifications: Notification[]) => {
         this.notifications = notifications;
-        console.log('🔔 Notifications updated:', notifications.length);
       })
     );
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-  }
-
-  trackByNotificationId(index: number, notification: Notification): number {
-    return notification.id;
   }
 
   getTimeAgo(timestamp: string): string {

@@ -18,9 +18,7 @@ export class PublicBlogFacadeService {
   getPostsPublished(): Observable<Post[]> {
     return this.postApiService.getPostsByStatus(PostStatusEnum.PUBLISHED).pipe(
       map(PostResponse.converter),
-      catchError((erro: HttpErrorResponse) =>
-        throwError(() => ErroResponse.converterComToasty(erro))
-      )
+      catchError((erro: HttpErrorResponse) => throwError(() => ErroResponse.converter(erro)))
     );
   }
 }

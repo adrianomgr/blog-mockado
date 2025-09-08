@@ -1,4 +1,4 @@
-import { User } from "../interface/user.interface";
+import { User } from './user';
 
 export class Login {
   success!: boolean;

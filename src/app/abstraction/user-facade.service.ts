@@ -19,9 +19,7 @@ export class UserFacadeService {
   getAllUsers(): Observable<User[]> {
     return this.userService.getAllUsers().pipe(
       map(UserResponse.converterLista),
-      catchError((erro: HttpErrorResponse) =>
-        throwError(() => ErroResponse.converterComToasty(erro))
-      )
+      catchError((erro: HttpErrorResponse) => throwError(() => ErroResponse.converter(erro)))
     );
   }
 
@@ -29,9 +27,7 @@ export class UserFacadeService {
   getUserById(id: number): Observable<User> {
     return this.userService.getUserById(id).pipe(
       map(UserResponse.converter),
-      catchError((erro: HttpErrorResponse) =>
-        throwError(() => ErroResponse.converterComToasty(erro))
-      )
+      catchError((erro: HttpErrorResponse) => throwError(() => ErroResponse.converter(erro)))
     );
   }
 
@@ -39,9 +35,7 @@ export class UserFacadeService {
   createUser(user: CreateUserRequest): Observable<User> {
     return this.userService.createUser(user).pipe(
       map(UserResponse.converter),
-      catchError((erro: HttpErrorResponse) =>
-        throwError(() => ErroResponse.converterComToasty(erro))
-      )
+      catchError((erro: HttpErrorResponse) => throwError(() => ErroResponse.converter(erro)))
     );
   }
 
@@ -50,9 +44,7 @@ export class UserFacadeService {
     return this.userService
       .updateUser(id, user)
       .pipe(
-        catchError((erro: HttpErrorResponse) =>
-          throwError(() => ErroResponse.converterComToasty(erro))
-        )
+        catchError((erro: HttpErrorResponse) => throwError(() => ErroResponse.converter(erro)))
       );
   }
 
@@ -61,9 +53,7 @@ export class UserFacadeService {
     return this.userService
       .deleteUser(id)
       .pipe(
-        catchError((erro: HttpErrorResponse) =>
-          throwError(() => ErroResponse.converterComToasty(erro))
-        )
+        catchError((erro: HttpErrorResponse) => throwError(() => ErroResponse.converter(erro)))
       );
   }
 }

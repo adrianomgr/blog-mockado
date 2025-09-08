@@ -23,15 +23,13 @@
   >
     <div class="notification-content">
       <div class="notification-list">
-        <div *ngIf="notifications.length === 0" class="p-4 text-center text-color-secondary">
+        @if (notifications.length === 0) {
+        <div class="p-4 text-center text-color-secondary">
           <i class="pi pi-bell-slash text-4xl mb-3 block"></i>
           <p>Nenhuma notificação</p>
         </div>
-
-        <div
-          *ngFor="let notification of notifications; trackBy: trackByNotificationId"
-          class="notification-item p-3 mb-2 border-1 surface-border border-round"
-        >
+        } @for (notification of notifications; track notification.id) {
+        <div class="notification-item p-3 mb-2 border-1 surface-border border-round">
           <div class="flex align-items-start gap-3">
             <i
               [class]="notification.icon"
@@ -61,6 +59,7 @@
             </div>
           </div>
         </div>
+        }
       </div>
     </div>
   </p-dialog>
