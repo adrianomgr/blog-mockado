@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { UserCreate } from '@app/domain/model/user-create';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { NotificationFacadeService } from '../../abstraction/notification-facade.service';
-import { UserStore } from '../store/user.store';
+import { UserStore } from '../infrastructure/store/user.store';
+import { NotificationFacadeService } from './notification-facade.service';
 
 /**
  * Facade para operações de usuários

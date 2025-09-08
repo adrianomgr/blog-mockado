@@ -1,0 +1,70 @@
+<div class="post-statistics">
+  <div class="header">
+    <h3>
+      <i class="pi pi-chart-bar"></i>
+      Estatísticas dos Posts
+    </h3>
+    <span class="total-badge">{{ stats?.total || 0 }} Total</span>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-item total">
+      <div class="stat-icon">
+        <i class="pi pi-file"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-number">{{ stats?.total || 0 }}</span>
+        <span class="stat-label">Total de Posts</span>
+      </div>
+    </div>
+
+    <div class="stat-item published">
+      <div class="stat-icon">
+        <i class="pi pi-check-circle"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-number">{{ stats?.published || 0 }}</span>
+        <span class="stat-label">Publicados</span>
+      </div>
+    </div>
+
+    <div class="stat-item draft">
+      <div class="stat-icon">
+        <i class="pi pi-file-edit"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-number">{{ stats?.draft || 0 }}</span>
+        <span class="stat-label">Rascunhos</span>
+      </div>
+    </div>
+
+    <div class="stat-item tags">
+      <div class="stat-icon">
+        <i class="pi pi-tags"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-number">{{ stats?.uniqueTags?.length || 0 }}</span>
+        <span class="stat-label">Tags Únicas</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seção de Tags -->
+  <div class="tags-section" *ngIf="stats && stats.uniqueTags && stats.uniqueTags.length > 0">
+    <div class="tags-header">
+      <h4>
+        <i class="pi pi-bookmark"></i>
+        Tags Populares
+      </h4>
+    </div>
+    <div class="tags-container">
+      <span *ngFor="let tag of stats.uniqueTags.slice(0, 8)" class="tag-item">
+        <i class="pi pi-tag"></i>
+        {{ tag }}
+      </span>
+      <span *ngIf="stats.uniqueTags.length > 8" class="tag-more">
+        +{{ stats.uniqueTags.length - 8 }} mais
+      </span>
+    </div>
+  </div>
+</div>

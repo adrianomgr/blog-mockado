@@ -3,9 +3,9 @@ import { Observable, forkJoin } from 'rxjs';
 import {
   CreateNotificationRequest,
   Notification,
-} from '../../domain/interface/notification.interface';
-import { NotificationService } from '../api/notification.service';
-import { NotificationStore } from '../store/notification.store';
+} from '../domain/interface/notification.interface';
+import { NotificationService } from '../infrastructure/api/notification.service';
+import { NotificationStore } from '../infrastructure/store/notification.store';
 
 @Injectable({
   providedIn: 'root',

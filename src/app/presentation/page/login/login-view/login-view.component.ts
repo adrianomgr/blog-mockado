@@ -21,7 +21,6 @@ import { UserFacade } from '@app/abstraction/user.facade';
 import { User } from '@app/domain/interface/user.interface';
 import { AuthService } from '@app/infrastructure/api/auth.service';
 import { UserStore } from '@app/infrastructure/store/user.store';
-import { UserCounterComponent } from '@app/presentation/components/user-counter.component';
 
 @Component({
   selector: 'app-login-view',
@@ -39,7 +38,6 @@ import { UserCounterComponent } from '@app/presentation/components/user-counter.
     TableModule,
     TagModule,
     DialogModule,
-    UserCounterComponent,
   ],
   providers: [MessageService, UserFacade],
   templateUrl: './login-view.component.html',

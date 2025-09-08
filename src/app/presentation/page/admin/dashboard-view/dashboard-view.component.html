@@ -4,23 +4,16 @@
     <p>Bem-vindo ao painel administrativo</p>
   </div>
 
-  <!-- Componente de estatísticas em tempo real dos posts -->
-  <app-post-statistics></app-post-statistics>
+  <!-- Grid de estatísticas -->
+  <div class="stats-grid">
+    <!-- Estatísticas de posts -->
+    <div class="stats-card">
+      <app-post-statistics></app-post-statistics>
+    </div>
 
-  <div class="dashboard-content">
-    <div class="content-row">
-      <div class="chart-container">
-        <p-card>
-          <ng-template pTemplate="header">
-            <h3>Visualizações dos Últimos 7 Dias</h3>
-          </ng-template>
-          <ng-template pTemplate="content">
-            <div class="chart-placeholder">
-              <p>Gráfico será implementado aqui</p>
-            </div>
-          </ng-template>
-        </p-card>
-      </div>
+    <!-- Estatísticas de usuários -->
+    <div class="stats-card">
+      <app-user-counter></app-user-counter>
     </div>
   </div>
 </div>

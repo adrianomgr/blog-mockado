@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { CreatePostRequest, Post, UpdatePostRequest } from '@app/domain/interface/post.interface';
 import { Observable, combineLatest, map } from 'rxjs';
-import { NotificationFacadeService } from '../../abstraction/notification-facade.service';
-import { PostStore } from '../store/post.store';
-import { UserStore } from '../store/user.store';
+import { PostStore } from '../infrastructure/store/post.store';
+import { UserStore } from '../infrastructure/store/user.store';
+import { NotificationFacadeService } from './notification-facade.service';
 
 @Injectable({
   providedIn: 'root',

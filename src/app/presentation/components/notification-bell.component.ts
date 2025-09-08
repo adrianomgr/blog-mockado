@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NotificationFacadeService } from '@app/abstraction/notification-facade.service';
 import { Notification } from '@app/domain/interface/notification.interface';
-import { NotificationFacadeService } from '@app/infrastructure/facade/notification-facade.service';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
