@@ -11,7 +11,6 @@ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-notification-bell',
-  standalone: true,
   imports: [
     CommonModule,
     BadgeModule,

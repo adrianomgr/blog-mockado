@@ -13,7 +13,6 @@ interface DashboardStats {
 
 @Component({
   selector: 'app-dashboard-view',
-  standalone: true,
   imports: [CommonModule, CardModule, PostStatisticsComponent, UserCounterComponent],
   templateUrl: './dashboard-view.component.html',
   styleUrl: './dashboard-view.component.scss',

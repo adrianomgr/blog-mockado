@@ -12,7 +12,7 @@
     <!-- Informações do Usuário -->
     <div class="flex align-items-center gap-2">
       <p-avatar
-        [label]="currentUserInitials"
+        [label]="currentUserName | userInitials"
         styleClass="bg-primary text-white"
         shape="circle"
         size="normal"

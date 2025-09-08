@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HeaderFacadeService } from '@app/abstraction/header.facade.service';
 import { User } from '@app/domain/model/user';
 import { NotificationBellComponent } from '@app/presentation/components/notification-bell/notification-bell.component';
+import { UserInitialsPipe } from '@app/presentation/pipe/user-initials.pipe';
 import { ConfirmationService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
@@ -15,7 +16,6 @@ import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-admin-header',
-  standalone: true,
   imports: [
     CommonModule,
     ButtonModule,
@@ -25,6 +25,7 @@ import { Subject, takeUntil } from 'rxjs';
     BadgeModule,
     ConfirmDialogModule,
     NotificationBellComponent,
+    UserInitialsPipe,
   ],
   templateUrl: './admin-header.component.html',
   styleUrl: './admin-header.component.scss',
@@ -67,16 +68,6 @@ export class AdminHeaderComponent implements OnInit, OnDestroy {
 
   get currentUserEmail(): string {
     return this.currentUser?.email || '';
-  }
-
-  get currentUserInitials(): string {
-    if (!this.currentUser?.name) return 'U';
-
-    const names = this.currentUser.name.split(' ');
-    if (names.length >= 2) {
-      return (names[0][0] + names[1][0]).toUpperCase();
-    }
-    return names[0][0].toUpperCase();
   }
 
   logout(): void {

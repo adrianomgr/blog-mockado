@@ -5,7 +5,6 @@ import { AdminSidebarComponent } from '../admin-sidebar/admin-sidebar.component'
 
 @Component({
   selector: 'app-admin-layout',
-  standalone: true,
   imports: [RouterOutlet, AdminHeaderComponent, AdminSidebarComponent],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.scss',

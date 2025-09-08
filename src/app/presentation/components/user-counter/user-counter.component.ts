@@ -6,7 +6,6 @@ import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-user-counter',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './user-counter.component.html',
   styleUrl: './user-counter.component.scss',

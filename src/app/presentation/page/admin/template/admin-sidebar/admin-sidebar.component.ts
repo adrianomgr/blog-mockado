@@ -4,7 +4,6 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 
 @Component({
   selector: 'app-admin-sidebar',
-  standalone: true,
   imports: [PanelMenuModule],
   templateUrl: './admin-sidebar.component.html',
   styleUrl: './admin-sidebar.component.scss',

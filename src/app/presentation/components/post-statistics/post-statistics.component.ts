@@ -6,7 +6,6 @@ import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-post-statistics',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './post-statistics.component.html',
   styleUrl: './post-statistics.component.scss',

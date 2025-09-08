@@ -20,7 +20,6 @@ import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-users-view',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
