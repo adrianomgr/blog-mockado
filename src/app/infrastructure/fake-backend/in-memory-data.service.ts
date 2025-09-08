@@ -2,18 +2,18 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { InMemoryDbService, RequestInfo } from 'angular-in-memory-web-api';
 import { Observable } from 'rxjs';
-import { NotificationStore } from './store/notification.store';
-import { PostStore } from './store/post.store';
-import { UserStore } from './store/user.store';
+import { NotificationHandlerStore } from './store-handler/notification-handler-store';
+import { PostHandlerStore } from './store-handler/post-handler-store';
+import { UserHandlerStore } from './store-handler/user-handler-store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InMemoryDataService implements InMemoryDbService {
   constructor(
-    private readonly userStore: UserStore,
-    private readonly postStore: PostStore,
-    private readonly notificationStore: NotificationStore
+    private readonly userStore: UserHandlerStore,
+    private readonly postStore: PostHandlerStore,
+    private readonly notificationStore: NotificationHandlerStore
   ) {}
 
   createDb() {

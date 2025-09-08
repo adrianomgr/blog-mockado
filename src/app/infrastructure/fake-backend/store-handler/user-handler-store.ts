@@ -6,19 +6,12 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class UserStore {
+export class UserHandlerStore {
   private readonly usersSubject = new BehaviorSubject<User[]>(UsersMock);
 
   private readonly users$ = this.usersSubject.asObservable();
 
-  constructor() {
-    console.log('🏪 UserStore inicializando...');
-    console.log('📦 UsersMock importado:', UsersMock);
-    console.log('📦 Tipo do UsersMock:', typeof UsersMock);
-    console.log('📦 É array?', Array.isArray(UsersMock));
-    console.log('👥 Usuários no BehaviorSubject:', this.usersSubject.value);
-    console.log('📊 Total de usuários:', this.usersSubject.value?.length || 0);
-  }
+  constructor() {}
 
   get currentUsers(): User[] {
     const users = this.usersSubject.value;

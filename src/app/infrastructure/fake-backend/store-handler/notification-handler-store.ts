@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class NotificationStore {
+export class NotificationHandlerStore {
   private readonly mockNotifications: Notification[] = NotificationsMock;
   private readonly notificationsSubject = new BehaviorSubject<Notification[]>(
     this.mockNotifications

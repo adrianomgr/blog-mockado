@@ -9,8 +9,8 @@ import { UpdatePostRequest } from '../../contract/request/update-post.request';
 @Injectable({
   providedIn: 'root',
 })
-export class PostStore {
-  private readonly mockPosts: Post[] = PostsMock as Post[];
+export class PostHandlerStore {
+  private readonly mockPosts: Post[] = PostsMock;
   private readonly postsSubject = new BehaviorSubject<Post[]>(this.mockPosts);
   private readonly posts$ = this.postsSubject.asObservable();
 
