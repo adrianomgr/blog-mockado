@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { PostFacadeService } from '@app/abstraction/post-facade.service';
+import { PostFacadeService } from '@app/abstraction/post.facade.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -25,7 +25,6 @@ export class PostStatisticsComponent implements OnInit, OnDestroy {
   constructor(private readonly postFacade: PostFacadeService) {}
 
   ngOnInit(): void {
-    // Inscrever-se nas estatísticas dos posts para atualizações em tempo real
     this.subscription.add(
       this.postFacade.getPostStatistics$().subscribe((stats) => {
         this.stats = stats;

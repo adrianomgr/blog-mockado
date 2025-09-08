@@ -16,7 +16,7 @@ import { ToastModule } from 'primeng/toast';
 // Services
 import { Constants } from '@app/constants';
 import { ProfileEnum } from '@app/domain/enum/profile.enum';
-import { SignUpService } from '@app/infrastructure/api/sign-up.service';
+import { SignUpService } from '@app/infrastructure/api/sign-up.api.service';
 
 @Component({
   selector: 'app-sing-up-view',

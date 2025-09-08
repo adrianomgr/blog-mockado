@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "title": "Introdução ao Angular 20",
+    "content": "Angular 20 trouxe muitas novidades incríveis para o desenvolvimento web. Veja como elas podem melhorar seus projetos.",
+    "status": "published",
+    "authorId": 1,
+    "author": "Administrador do Sistema",
+    "createdAt": "2024-01-15T10:00:00Z",
+    "tags": ["angular", "frontend", "typescript"]
+  },
+  {
+    "id": 2,
+    "title": "TypeScript para Iniciantes",
+    "content": "TypeScript é uma linguagem que adiciona tipagem estática ao JavaScript. Vamos aprender os conceitos básicos e como começar a usar TypeScript em seus projetos.",
+    "status": "published",
+    "authorId": 2,
+    "author": "Editor de Conteúdo",
+    "createdAt": "2024-01-10T14:30:00Z",
+    "tags": ["typescript", "javascript", "programming"]
+  },
+  {
+    "id": 3,
+    "title": "PrimeNG: Componentes Poderosos",
+    "content": "PrimeNG oferece uma ampla gama de componentes UI para Angular. Vamos ver como usar os principais componentes em seus projetos.",
+    "status": "draft",
+    "authorId": 2,
+    "author": "Editor de Conteúdo",
+    "createdAt": "2024-01-08T16:45:00Z",
+    "tags": ["primeng", "angular", "ui", "components"]
+  },
+  {
+    "id": 4,
+    "title": "Gerenciamento de Estado com NgRx",
+    "content": "NgRx é uma biblioteca para gerenciamento de estado em aplicações Angular. Aprenda os conceitos fundamentais e como implementar.",
+    "status": "published",
+    "authorId": 1,
+    "author": "Administrador do Sistema",
+    "createdAt": "2024-01-05T11:20:00Z",
+    "tags": ["ngrx", "angular", "state-management", "rxjs"]
+  }
+]

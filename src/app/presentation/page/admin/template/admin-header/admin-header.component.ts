@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '@app/domain/interface/user.interface';
-import { AuthService } from '@app/infrastructure/api/auth.service';
+import { AuthApiService } from '@app/infrastructure/api/auth.api.service';
 import { NotificationBellComponent } from '@app/presentation/components/notification-bell.component';
 import { ConfirmationService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
@@ -37,7 +37,7 @@ export class AdminHeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly router: Router,
-    private readonly authService: AuthService,
+    private readonly authService: AuthApiService,
     private readonly confirmationService: ConfirmationService
   ) {}
 

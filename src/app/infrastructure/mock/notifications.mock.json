@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "type": "new-user",
+    "title": "Novo Usuário Registrado",
+    "message": "O usuário \"Administrador do Sistema\" foi registrado com sucesso",
+    "timestamp": "2024-01-01T09:00:00Z",
+    "read": true,
+    "icon": "pi pi-user-plus",
+    "severity": "success"
+  },
+  {
+    "id": 2,
+    "type": "new-user",
+    "title": "Novo Usuário Registrado",
+    "message": "O usuário \"Editor de Conteúdo\" foi registrado com sucesso",
+    "timestamp": "2024-01-02T10:15:00Z",
+    "read": true,
+    "icon": "pi pi-user-plus",
+    "severity": "success"
+  },
+  {
+    "id": 3,
+    "type": "new-user",
+    "title": "Novo Usuário Registrado",
+    "message": "O usuário \"Usuário Padrão\" foi registrado com sucesso",
+    "timestamp": "2024-01-03T14:30:00Z",
+    "read": false,
+    "icon": "pi pi-user-plus",
+    "severity": "success"
+  },
+  {
+    "id": 4,
+    "type": "new-post",
+    "title": "Novo Post Criado",
+    "message": "O post \"Gerenciamento de Estado com NgRx\" foi criado com sucesso",
+    "timestamp": "2024-01-05T11:20:00Z",
+    "read": true,
+    "icon": "pi pi-file-edit",
+    "severity": "info"
+  },
+  {
+    "id": 5,
+    "type": "new-post",
+    "title": "Novo Post Criado",
+    "message": "O post \"PrimeNG: Componentes Poderosos\" foi criado com sucesso",
+    "timestamp": "2024-01-08T16:45:00Z",
+    "read": false,
+    "icon": "pi pi-file-edit",
+    "severity": "info"
+  },
+  {
+    "id": 6,
+    "type": "new-post",
+    "title": "Novo Post Criado",
+    "message": "O post \"TypeScript para Iniciantes\" foi criado com sucesso",
+    "timestamp": "2024-01-10T14:30:00Z",
+    "read": false,
+    "icon": "pi pi-file-edit",
+    "severity": "info"
+  },
+  {
+    "id": 7,
+    "type": "new-post",
+    "title": "Novo Post Criado",
+    "message": "O post \"Introdução ao Angular 18\" foi criado com sucesso",
+    "timestamp": "2024-01-15T10:00:00Z",
+    "read": false,
+    "icon": "pi pi-file-edit",
+    "severity": "info"
+  }
+]

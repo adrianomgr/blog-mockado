@@ -14,7 +14,7 @@ import { ToastModule } from 'primeng/toast';
 // Domain imports
 import { PostFacade } from '@app/abstraction/post.facade';
 import { Post } from '@app/domain/interface/post.interface';
-import { AuthService } from '@app/infrastructure/api/auth.service';
+import { AuthApiService } from '@app/infrastructure/api/auth.api.service';
 
 @Component({
   selector: 'app-post-view',
@@ -47,7 +47,7 @@ export class PostViewComponent implements OnInit {
     private readonly messageService: MessageService,
     private readonly confirmationService: ConfirmationService,
     private readonly postFacade: PostFacade,
-    private readonly authService: AuthService
+    private readonly authService: AuthApiService
   ) {}
 
   ngOnInit() {

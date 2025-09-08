@@ -1,51 +1,37 @@
 import { Injectable } from '@angular/core';
+import { Constants } from '@app/constants';
+import { NotificationSeverityEnum } from '@app/domain/enum/notification-severity.enum';
+import { NotificationTypeEnum } from '@app/domain/enum/notification-type.enum';
+import { Notification } from '@app/domain/model/notification';
+import * as NotificationsMock from '@app/infrastructure/mock/notifications.mock.json';
 import { BehaviorSubject, Observable, map } from 'rxjs';
-import {
-  CreateNotificationRequest,
-  Notification,
-} from '../../domain/interface/notification.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationStore {
+  private readonly mockNotifications: Notification[] = NotificationsMock as Notification[];
   private readonly notificationsSubject = new BehaviorSubject<Notification[]>(
-    this.getInitialNotifications()
+    this.mockNotifications
   );
+  private readonly notifications$ = this.notificationsSubject.asObservable();
 
-  // Observable público para componentes se inscreverem
-  public notifications$ = this.notificationsSubject.asObservable();
+  constructor() {}
 
-  constructor() {
-    console.log(
-      '🔔 NotificationStore initialized with',
-      this.currentNotifications.length,
-      'notifications'
-    );
-  }
-
-  // Getter para acessar o valor atual das notificações
   get currentNotifications(): Notification[] {
     return this.notificationsSubject.value;
   }
 
-  // Observable para notificações não lidas
-  get unreadNotifications$(): Observable<Notification[]> {
-    return this.notifications$.pipe(map((notifications) => notifications.filter((n) => !n.read)));
-  }
-
-  // Observable para contar notificações não lidas
-  get unreadCount$(): Observable<number> {
-    return this.unreadNotifications$.pipe(map((notifications) => notifications.length));
-  }
-
   // Método para adicionar uma nova notificação
-  addNotification(notificationData: CreateNotificationRequest): Notification {
+  addNotification(notificationData: Notification): Notification {
     const currentNotifications = this.currentNotifications;
     const newId = Math.max(...currentNotifications.map((n) => n.id), 0) + 1;
 
-    const icon = notificationData.type === 'new-post' ? 'pi pi-file-edit' : 'pi pi-user-plus';
-    const severity = notificationData.type === 'new-post' ? 'info' : 'success';
+    const icon = Constants.iconsNotification[notificationData.type];
+    const severity =
+      notificationData.type === NotificationTypeEnum.NEW_POST
+        ? NotificationSeverityEnum.INFO
+        : NotificationSeverityEnum.SUCCESS;
 
     const newNotification: Notification = {
       id: newId,
@@ -142,7 +128,7 @@ export class NotificationStore {
   }
 
   // Método para obter notificações por tipo
-  getNotificationsByType(type: 'new-post' | 'new-user'): Observable<Notification[]> {
+  getNotificationsByType(type: NotificationTypeEnum): Observable<Notification[]> {
     return this.notifications$.pipe(
       map((notifications) => notifications.filter((n) => n.type === type))
     );
@@ -191,74 +177,74 @@ export class NotificationStore {
       // Notificações dos usuários iniciais
       {
         id: 1,
-        type: 'new-user',
+        type: NotificationTypeEnum.NEW_USER,
         title: 'Novo Usuário Registrado',
         message: 'O usuário "Administrador do Sistema" foi registrado com sucesso',
         timestamp: '2024-01-01T09:00:00Z',
         read: true,
         icon: 'pi pi-user-plus',
-        severity: 'success',
+        severity: NotificationSeverityEnum.SUCCESS,
       },
       {
         id: 2,
-        type: 'new-user',
+        type: NotificationTypeEnum.NEW_USER,
         title: 'Novo Usuário Registrado',
         message: 'O usuário "Editor de Conteúdo" foi registrado com sucesso',
         timestamp: '2024-01-02T10:15:00Z',
         read: true,
         icon: 'pi pi-user-plus',
-        severity: 'success',
+        severity: NotificationSeverityEnum.SUCCESS,
       },
       {
         id: 3,
-        type: 'new-user',
+        type: NotificationTypeEnum.NEW_USER,
         title: 'Novo Usuário Registrado',
         message: 'O usuário "Usuário Padrão" foi registrado com sucesso',
         timestamp: '2024-01-03T14:30:00Z',
         read: false,
         icon: 'pi pi-user-plus',
-        severity: 'success',
+        severity: NotificationSeverityEnum.SUCCESS,
       },
       // Notificações dos posts iniciais
       {
         id: 4,
-        type: 'new-post',
+        type: NotificationTypeEnum.NEW_POST,
         title: 'Novo Post Criado',
         message: 'O post "Gerenciamento de Estado com NgRx" foi criado com sucesso',
         timestamp: '2024-01-05T11:20:00Z',
         read: true,
         icon: 'pi pi-file-edit',
-        severity: 'info',
+        severity: NotificationSeverityEnum.INFO,
       },
       {
         id: 5,
-        type: 'new-post',
+        type: NotificationTypeEnum.NEW_POST,
         title: 'Novo Post Criado',
         message: 'O post "PrimeNG: Componentes Poderosos" foi criado com sucesso',
         timestamp: '2024-01-08T16:45:00Z',
         read: false,
         icon: 'pi pi-file-edit',
-        severity: 'info',
+        severity: NotificationSeverityEnum.INFO,
       },
       {
         id: 6,
-        type: 'new-post',
+        type: NotificationTypeEnum.NEW_POST,
         title: 'Novo Post Criado',
         message: 'O post "TypeScript para Iniciantes" foi criado com sucesso',
         timestamp: '2024-01-10T14:30:00Z',
         read: false,
         icon: 'pi pi-file-edit',
-        severity: 'info',
+        severity: NotificationSeverityEnum.INFO,
       },
       {
         id: 7,
-        type: 'new-post',
+        type: NotificationTypeEnum.NEW_POST,
         title: 'Novo Post Criado',
         message: 'O post "Introdução ao Angular 18" foi criado com sucesso',
         timestamp: '2024-01-15T10:00:00Z',
         read: false,
         icon: 'pi pi-file-edit',
-        severity: 'info',
+        severity: NotificationSeverityEnum.INFO,
       },
     ];
   }

@@ -19,7 +19,7 @@ import { ToastModule } from 'primeng/toast';
 // Services
 import { UserFacade } from '@app/abstraction/user.facade';
 import { User } from '@app/domain/interface/user.interface';
-import { AuthService } from '@app/infrastructure/api/auth.service';
+import { AuthApiService } from '@app/infrastructure/api/auth.api.service';
 import { UserStore } from '@app/infrastructure/store/user.store';
 
 @Component({
@@ -54,7 +54,7 @@ export class LoginViewComponent implements OnInit, OnDestroy {
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
     private readonly messageService: MessageService,
-    private readonly authService: AuthService,
+    private readonly authService: AuthApiService,
     private readonly userFacade: UserFacade,
     private readonly userStore: UserStore
   ) {

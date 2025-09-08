@@ -1,0 +1,23 @@
+.notification-bell-container {
+  position: relative;
+}
+
+.notification-content {
+  .notification-list {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+}
+
+.notification-item {
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--surface-hover);
+  }
+}
+
+.notification-unread {
+  background-color: var(--blue-50);
+  border-left: 3px solid var(--blue-500);
+}

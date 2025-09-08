@@ -14,48 +14,7 @@ export class InMemoryDataService implements InMemoryDbService {
     private readonly userStore: UserStore,
     private readonly postStore: PostStore,
     private readonly notificationStore: NotificationStore
-  ) {
-    // Inicializar o UserStore com dados iniciais
-    this.initializeDefaultUsers();
-  }
-
-  // Inicializar usuários padrão
-  private initializeDefaultUsers(): void {
-    const defaultUsers: UserCreate[] = [
-      {
-        id: 1,
-        username: 'admin',
-        password: 'admin123',
-        email: 'admin@example.com',
-        role: 'admin',
-        name: 'Administrador do Sistema',
-        createdAt: new Date('2025-01-15T08:30:00'),
-      },
-      {
-        id: 2,
-        username: 'editor',
-        password: 'editor123',
-        email: 'editor@example.com',
-        role: 'editor',
-        name: 'Editor de Conteúdo',
-        createdAt: new Date('2025-02-20T14:15:00'),
-      },
-      {
-        id: 3,
-        username: 'user',
-        password: 'user123',
-        email: 'user@example.com',
-        role: 'subscriber',
-        name: 'Usuário Padrão',
-        createdAt: new Date('2025-03-10T10:45:00'),
-      },
-    ];
-
-    // Só inicializar se não houver usuários
-    if (this.userStore.getUserCount() === 0) {
-      this.userStore.initializeUsers(defaultUsers);
-    }
-  }
+  ) {}
 
   createDb() {
     // Usar os dados dos stores
@@ -69,7 +28,6 @@ export class InMemoryDataService implements InMemoryDbService {
     return { users, posts, notifications };
   }
 
-  // Permitir GET /users, GET /posts e GET /notifications
   get(reqInfo: RequestInfo) {
     const db = this.createDb();
 

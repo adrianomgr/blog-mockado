@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { User } from '@app/domain/interface/user.interface';
+import { User } from '@app/domain/model/user';
 import { LoginRequest } from '@app/infrastructure/contract/request/login.request';
 import { LoginResponse } from '@app/infrastructure/contract/response/login.response';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -9,7 +9,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class AuthApiService {
   private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
@@ -37,7 +37,7 @@ export class AuthService {
       tap((response) => {
         if (response.success && response.token && response.user) {
           this.setToken(response.token);
-          this.currentUserSubject.next(LoginResponse.converter(response).user!);
+          this.currentUserSubject.next(LoginResponse.converter(response).user);
           this.isAuthenticatedSubject.next(true);
         }
       })
