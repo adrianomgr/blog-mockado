@@ -23,7 +23,7 @@ export class LoginFacadeService {
   login(username: string, password: string): Observable<LoginResponse> {
     return this.authApiService.login(username, password).pipe(
       catchError((erro: HttpErrorResponse) => {
-        return throwError(() => ErroResponse.converter(erro)); // Retorna o erro
+        return throwError(() => ErroResponse.converter(erro, this.messageService));
       })
     );
   }
