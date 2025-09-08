@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { PostFacadeService } from '@app/abstraction/post.facade.service';
+import { DashboardFacadeService } from '@app/abstraction/dashboard.facade.service';
+import { PostStatistics } from '@app/domain/model/post-statistics';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -11,24 +12,16 @@ import { Subscription } from 'rxjs';
   styleUrl: './post-statistics.component.scss',
 })
 export class PostStatisticsComponent implements OnInit, OnDestroy {
-  stats: {
-    total: number;
-    published: number;
-    draft: number;
-    byAuthor: { [authorId: number]: number };
-    totalTags: number;
-    uniqueTags: string[];
-  } | null = null;
+  statistics: PostStatistics = new PostStatistics();
 
   private readonly subscription: Subscription = new Subscription();
 
-  constructor(private readonly postFacade: PostFacadeService) {}
+  constructor(private readonly dashboardFacade: DashboardFacadeService) {}
 
   ngOnInit(): void {
     this.subscription.add(
-      this.postFacade.getPostStatistics$().subscribe((stats) => {
-        this.stats = stats;
-        console.log('📊 Estatísticas de posts atualizadas:', stats);
+      this.dashboardFacade.getPostStatistics().subscribe((stats: PostStatistics) => {
+        this.statistics = stats;
       })
     );
   }

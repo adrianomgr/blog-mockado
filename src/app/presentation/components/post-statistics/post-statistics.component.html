@@ -4,7 +4,7 @@
       <i class="pi pi-chart-bar"></i>
       Estatísticas dos Posts
     </h3>
-    <span class="total-badge">{{ stats?.total || 0 }} Total</span>
+    <span class="total-badge">{{ statistics.totalPosts || 0 }} Total</span>
   </div>
 
   <div class="stats-grid">
@@ -13,7 +13,7 @@
         <i class="pi pi-file"></i>
       </div>
       <div class="stat-info">
-        <span class="stat-number">{{ stats?.total || 0 }}</span>
+        <span class="stat-number">{{ statistics.totalPosts || 0 }}</span>
         <span class="stat-label">Total de Posts</span>
       </div>
     </div>
@@ -23,7 +23,7 @@
         <i class="pi pi-check-circle"></i>
       </div>
       <div class="stat-info">
-        <span class="stat-number">{{ stats?.published || 0 }}</span>
+        <span class="stat-number">{{ statistics.publishedCount }}</span>
         <span class="stat-label">Publicados</span>
       </div>
     </div>
@@ -33,7 +33,7 @@
         <i class="pi pi-file-edit"></i>
       </div>
       <div class="stat-info">
-        <span class="stat-number">{{ stats?.draft || 0 }}</span>
+        <span class="stat-number">{{ statistics.draftCount || 0 }}</span>
         <span class="stat-label">Rascunhos</span>
       </div>
     </div>
@@ -43,27 +43,30 @@
         <i class="pi pi-tags"></i>
       </div>
       <div class="stat-info">
-        <span class="stat-number">{{ stats?.uniqueTags?.length || 0 }}</span>
-        <span class="stat-label">Tags Únicas</span>
+        <span class="stat-number">{{ statistics.uniqueTags.length || 0 }}</span>
+        <span class="stat-label">Tags</span>
       </div>
     </div>
   </div>
 
   <!-- Seção de Tags -->
-  <div class="tags-section" *ngIf="stats && stats.uniqueTags && stats.uniqueTags.length > 0">
+  <div
+    class="tags-section"
+    *ngIf="statistics && statistics.uniqueTags && statistics.uniqueTags.length > 0"
+  >
     <div class="tags-header">
       <h4>
         <i class="pi pi-bookmark"></i>
-        Tags Populares
+        Tags
       </h4>
     </div>
     <div class="tags-container">
-      <span *ngFor="let tag of stats.uniqueTags.slice(0, 8)" class="tag-item">
+      <span *ngFor="let tag of statistics.uniqueTags.slice(0, 8)" class="tag-item">
         <i class="pi pi-tag"></i>
         {{ tag }}
       </span>
-      <span *ngIf="stats.uniqueTags.length > 8" class="tag-more">
-        +{{ stats.uniqueTags.length - 8 }} mais
+      <span *ngIf="statistics.uniqueTags.length > 8" class="tag-more">
+        +{{ statistics.uniqueTags.length - 8 }} mais
       </span>
     </div>
   </div>

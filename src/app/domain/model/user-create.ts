@@ -1,5 +1,4 @@
 export class UserCreate {
-  id: number;
   username: string;
   password: string;
   email: string;
@@ -8,7 +7,6 @@ export class UserCreate {
   createdAt?: string | Date;
 
   constructor(
-    id: number,
     username: string,
     password: string,
     email: string,
@@ -16,7 +14,6 @@ export class UserCreate {
     name: string,
     createdAt?: string | Date
   ) {
-    this.id = id;
     this.username = username;
     this.password = password;
     this.email = email;

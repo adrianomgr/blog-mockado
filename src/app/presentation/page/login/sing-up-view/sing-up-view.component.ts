@@ -1,9 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
-
-// PrimeNG imports
+import { SignUpFacadeService } from '@app/abstraction/sign-up.facade.service';
+import { Constants } from '@app/constants';
+import { ProfileEnum } from '@app/domain/enum/profile.enum';
+import { UserCreate } from '@app/domain/model/user-create';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -13,14 +21,8 @@ import { PasswordModule } from 'primeng/password';
 import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 
-// Services
-import { Constants } from '@app/constants';
-import { ProfileEnum } from '@app/domain/enum/profile.enum';
-import { SignUpService } from '@app/infrastructure/api/sign-up.api.service';
-
 @Component({
   selector: 'app-sing-up-view',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -37,7 +39,14 @@ import { SignUpService } from '@app/infrastructure/api/sign-up.api.service';
   styleUrls: ['./sing-up-view.component.scss'],
 })
 export class SingUpViewComponent {
-  signupForm: FormGroup;
+  signupForm: FormGroup<{
+    name: FormControl<string>;
+    username: FormControl<string>;
+    email: FormControl<string>;
+    password: FormControl<string>;
+    confirmPassword: FormControl<string>;
+    role: FormControl<string>;
+  }>;
   isLoading = false;
 
   roleOptions = Object.entries(Constants.descricoesProfile).map(([key, value]) => ({
@@ -46,18 +55,18 @@ export class SingUpViewComponent {
   }));
 
   constructor(
-    private readonly formBuilder: FormBuilder,
+    private readonly fbr: FormBuilder,
     private readonly router: Router,
-    private readonly signUpService: SignUpService,
+    private readonly signUpFacade: SignUpFacadeService,
     private readonly messageService: MessageService
   ) {
-    this.signupForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      username: ['', [Validators.required, Validators.minLength(4)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]],
-      role: ['', [Validators.required]],
+    this.signupForm = this.fbr.nonNullable.group({
+      name: this.fbr.nonNullable.control('', [Validators.required, Validators.minLength(2)]),
+      username: this.fbr.nonNullable.control('', [Validators.required, Validators.minLength(4)]),
+      email: this.fbr.nonNullable.control('', [Validators.required, Validators.email]),
+      password: this.fbr.nonNullable.control('', [Validators.required, Validators.minLength(6)]),
+      confirmPassword: this.fbr.nonNullable.control('', [Validators.required]),
+      role: this.fbr.nonNullable.control('', [Validators.required]),
     });
   }
 
@@ -65,43 +74,26 @@ export class SingUpViewComponent {
     if (this.signupForm.valid && this.passwordsMatch()) {
       this.isLoading = true;
 
-      const formData = this.signupForm.value;
-      const signUpData = {
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-        name: formData.name,
-        role: formData.role,
-      };
+      const { username, password, email, role, name } = this.signupForm.getRawValue();
 
-      this.signUpService.signUp(signUpData).subscribe({
-        next: (response) => {
+      const createUser = new UserCreate(username, password, email, role, name);
+
+      this.signUpFacade.createUser(createUser).subscribe({
+        next: () => {
           this.isLoading = false;
-          if (response.success) {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Sucesso',
-              detail: 'Conta criada com sucesso! Faça o login.',
-            });
-            setTimeout(() => {
-              this.router.navigate(['/login']);
-            }, 2000);
-          } else {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Erro',
-              detail: response.message || 'Erro ao criar conta',
-            });
-          }
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Conta criada com sucesso! Faça o login.',
+          });
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 200);
         },
         error: (error) => {
           this.isLoading = false;
           console.error('Erro no cadastro:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Erro',
-            detail: 'Erro ao criar conta. Tente novamente.',
-          });
+          // Erro já foi tratado pelo facade com toast
         },
       });
     } else {
@@ -117,8 +109,8 @@ export class SingUpViewComponent {
   }
 
   passwordsMatch(): boolean {
-    const password = this.signupForm.get('password')?.value;
-    const confirmPassword = this.signupForm.get('confirmPassword')?.value;
+    const password = this.signupForm.controls.password.value;
+    const confirmPassword = this.signupForm.controls.confirmPassword.value;
     return password === confirmPassword;
   }
 

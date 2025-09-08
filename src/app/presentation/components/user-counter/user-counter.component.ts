@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UserStore } from '@app/infrastructure/store/user.store';
+import { DashboardFacadeService } from '@app/abstraction/dashboard.facade.service';
+import { UserStatistics } from '@app/domain/model/user-statistics';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -11,33 +12,19 @@ import { Subject, takeUntil } from 'rxjs';
   styleUrl: './user-counter.component.scss',
 })
 export class UserCounterComponent implements OnInit, OnDestroy {
-  totalUsers = 0;
-  adminCount = 0;
-  editorCount = 0;
-  authorCount = 0;
-  subscriberCount = 0;
+  statistics: UserStatistics = new UserStatistics();
 
   private readonly destroy$ = new Subject<void>();
 
-  constructor(private readonly userStore: UserStore) {}
+  constructor(private readonly dashboardFacade: DashboardFacadeService) {}
 
   ngOnInit(): void {
-    // Se inscrever nas mudanças de usuários - REATIVO!
-    this.userStore.users$.pipe(takeUntil(this.destroy$)).subscribe((users: any[]) => {
-      this.totalUsers = users.length;
-      this.adminCount = users.filter((u: any) => u.role === 'admin').length;
-      this.editorCount = users.filter((u: any) => u.role === 'editor').length;
-      this.authorCount = users.filter((u: any) => u.role === 'author').length;
-      this.subscriberCount = users.filter((u: any) => u.role === 'subscriber').length;
-
-      console.log('📊 Estatísticas de usuários atualizadas:', {
-        total: this.totalUsers,
-        admin: this.adminCount,
-        editor: this.editorCount,
-        author: this.authorCount,
-        subscriber: this.subscriberCount,
+    this.dashboardFacade
+      .getUserStatistics()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((stats: UserStatistics) => {
+        this.statistics = stats;
       });
-    });
   }
 
   ngOnDestroy(): void {

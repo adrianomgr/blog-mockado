@@ -20,7 +20,7 @@ import { ToastModule } from 'primeng/toast';
 import { UserFacade } from '@app/abstraction/user.facade';
 import { User } from '@app/domain/interface/user.interface';
 import { AuthApiService } from '@app/infrastructure/api/auth.api.service';
-import { UserStore } from '@app/infrastructure/store/user.store';
+import { UserStore } from '@app/infrastructure/fake-backend/store/user.store';
 
 @Component({
   selector: 'app-login-view',

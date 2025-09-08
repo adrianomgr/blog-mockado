@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { User } from '@app/domain/interface/user.interface';
-import { AuthApiService } from '@app/infrastructure/api/auth.api.service';
+import { HeaderFacadeService } from '@app/abstraction/header.facade.service';
+import { User } from '@app/domain/model/user';
 import { NotificationBellComponent } from '@app/presentation/components/notification-bell.component';
 import { ConfirmationService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
@@ -37,7 +37,7 @@ export class AdminHeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly router: Router,
-    private readonly authService: AuthApiService,
+    private readonly headerFacade: HeaderFacadeService,
     private readonly confirmationService: ConfirmationService
   ) {}
 
@@ -51,11 +51,10 @@ export class AdminHeaderComponent implements OnInit, OnDestroy {
   }
 
   private loadCurrentUser(): void {
-    // Obtém o usuário atual do AuthService
-    this.authService.currentUser$.pipe(takeUntil(this.destroy$)).subscribe({
+    // Obtém o usuário atual do HeaderFacadeService
+    this.headerFacade.currentUser$.pipe(takeUntil(this.destroy$)).subscribe({
       next: (user: User | null) => {
         this.currentUser = user;
-        console.log('Header: Usuário carregado:', user);
       },
       error: (error: any) => {
         console.error('Erro ao carregar usuário do header:', error);
@@ -80,16 +79,6 @@ export class AdminHeaderComponent implements OnInit, OnDestroy {
     return names[0][0].toUpperCase();
   }
 
-  toggleMobileMenu(): void {
-    // Implementar toggle do menu mobile
-    console.log('Toggle mobile menu');
-  }
-
-  showNotifications(): void {
-    // Implementar exibição de notificações
-    console.log('Show notifications');
-  }
-
   logout(): void {
     this.confirmationService.confirm({
       message: 'Tem certeza que deseja fazer logout?',
@@ -98,11 +87,11 @@ export class AdminHeaderComponent implements OnInit, OnDestroy {
       acceptLabel: 'Sim, fazer logout',
       rejectLabel: 'Cancelar',
       accept: () => {
-        this.authService.logout();
+        this.headerFacade.logout();
         this.router.navigate(['/login']);
       },
       reject: () => {
-        // Usuário cancelou, não faz nada
+        return;
       },
     });
   }

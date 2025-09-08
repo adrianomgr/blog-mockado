@@ -3,8 +3,8 @@ import { PostStatusEnum } from '@app/domain/enum/post-status.enum';
 import { Post } from '@app/domain/model/post';
 import * as PostsMock from '@app/infrastructure/mock/posts.mock.json';
 import { BehaviorSubject, Observable, map } from 'rxjs';
-import { CreatePostRequest } from '../contract/request/create-post.request';
-import { UpdatePostRequest } from '../contract/request/update-post.request';
+import { CreatePostRequest } from '../../contract/request/create-post.request';
+import { UpdatePostRequest } from '../../contract/request/update-post.request';
 
 @Injectable({
   providedIn: 'root',
