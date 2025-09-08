@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
+import { PostStatisticsComponent } from '../../../components/post-statistics.component';
 
 interface DashboardStats {
   totalPosts: number;
@@ -12,7 +13,7 @@ interface DashboardStats {
 @Component({
   selector: 'app-dashboard-view',
   standalone: true,
-  imports: [CommonModule, CardModule],
+  imports: [CommonModule, CardModule, PostStatisticsComponent],
   templateUrl: './dashboard-view.component.html',
   styleUrl: './dashboard-view.component.scss',
 })

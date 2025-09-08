@@ -2,14 +2,21 @@ import { Injectable } from '@angular/core';
 import { InMemoryDbService, RequestInfo } from 'angular-in-memory-web-api';
 import { Observable } from 'rxjs';
 import { UserCreate } from '../../domain/model/user-create';
+import { PostStore } from '../store/post.store';
+import { UserStore } from '../store/user.store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InMemoryDataService implements InMemoryDbService {
-  createDb() {
-    // Dados fake para usuários
-    const users: UserCreate[] = [
+  constructor(private readonly userStore: UserStore, private readonly postStore: PostStore) {
+    // Inicializar o UserStore com dados iniciais
+    this.initializeDefaultUsers();
+  }
+
+  // Inicializar usuários padrão
+  private initializeDefaultUsers(): void {
+    const defaultUsers: UserCreate[] = [
       {
         id: 1,
         username: 'admin',
@@ -36,53 +43,18 @@ export class InMemoryDataService implements InMemoryDbService {
       },
     ];
 
-    // Dados fake para posts
-    const posts = [
-      {
-        id: 1,
-        title: 'Introdução ao Angular 18',
-        content:
-          'Angular 18 trouxe muitas novidades incríveis para o desenvolvimento web. Neste post, vamos explorar as principais funcionalidades e como elas podem melhorar seus projetos.',
-        status: 'published',
-        authorId: 1,
-        author: 'Administrador do Sistema',
-        createdAt: '2024-01-15T10:00:00Z',
-        tags: ['angular', 'frontend', 'typescript'],
-      },
-      {
-        id: 2,
-        title: 'TypeScript para Iniciantes',
-        content:
-          'TypeScript é uma linguagem que adiciona tipagem estática ao JavaScript. Vamos aprender os conceitos básicos e como começar a usar TypeScript em seus projetos.',
-        status: 'published',
-        authorId: 2,
-        author: 'Editor de Conteúdo',
-        createdAt: '2024-01-10T14:30:00Z',
-        tags: ['typescript', 'javascript', 'programming'],
-      },
-      {
-        id: 3,
-        title: 'PrimeNG: Componentes Poderosos',
-        content:
-          'PrimeNG oferece uma ampla gama de componentes UI para Angular. Vamos ver como usar os principais componentes em seus projetos.',
-        status: 'draft',
-        authorId: 2,
-        author: 'Editor de Conteúdo',
-        createdAt: '2024-01-08T16:45:00Z',
-        tags: ['primeng', 'angular', 'ui', 'components'],
-      },
-      {
-        id: 4,
-        title: 'Gerenciamento de Estado com NgRx',
-        content:
-          'NgRx é uma biblioteca para gerenciamento de estado em aplicações Angular. Aprenda os conceitos fundamentais e como implementar.',
-        status: 'published',
-        authorId: 1,
-        author: 'Administrador do Sistema',
-        createdAt: '2024-01-05T11:20:00Z',
-        tags: ['ngrx', 'angular', 'state-management', 'rxjs'],
-      },
-    ];
+    // Só inicializar se não houver usuários
+    if (this.userStore.getUserCount() === 0) {
+      this.userStore.initializeUsers(defaultUsers);
+    }
+  }
+
+  createDb() {
+    // Usar os usuários do UserStore
+    const users = this.userStore.currentUsers;
+
+    // Usar os posts do PostStore
+    const posts = this.postStore.currentPosts;
 
     console.log('🚀 InMemory Database initialized with users:', users);
     console.log('📚 InMemory Database initialized with posts:', posts);
@@ -126,8 +98,8 @@ export class InMemoryDataService implements InMemoryDbService {
       return this.handleGetPostById(reqInfo, db);
     }
 
-    // Aplicar filtros e retornar posts
-    const filteredPosts = this.applyPostFilters(reqInfo, db.posts);
+    // Usar posts do PostStore em vez do db
+    const filteredPosts = this.applyPostFilters(reqInfo, this.postStore.currentPosts);
 
     return reqInfo.utils.createResponse$(() => ({
       status: 200,
@@ -137,7 +109,8 @@ export class InMemoryDataService implements InMemoryDbService {
   }
 
   private handleGetPostById(reqInfo: RequestInfo, db: any) {
-    const post = db.posts.find((p: any) => p.id === +reqInfo.id);
+    // Usar posts do PostStore em vez do db
+    const post = this.postStore.currentPosts.find((p: any) => p.id === +reqInfo.id);
     if (post) {
       console.log('📖 Get post by ID:', reqInfo.id);
       return reqInfo.utils.createResponse$(() => ({
@@ -217,9 +190,10 @@ export class InMemoryDataService implements InMemoryDbService {
 
     console.log('🔐 Login attempt:', { username: body.username });
 
-    // Buscar usuário nos dados fake
-    const users = this.createDb().users;
-    const user = users.find((u) => u.username === body.username && u.password === body.password);
+    // Buscar usuário nos dados do UserStore
+    const user = this.userStore.currentUsers.find(
+      (u: UserCreate) => u.username === body.username && u.password === body.password
+    );
 
     if (user) {
       // Simular JWT token (normalmente seria gerado no backend)
@@ -260,12 +234,10 @@ export class InMemoryDataService implements InMemoryDbService {
 
     console.log('📝 Sign-up attempt:', { username: body.username, email: body.email });
 
-    // Buscar usuários existentes
-    const db = this.createDb();
-    const users = db.users;
-
     // Verificar se username ou email já existem
-    const existingUser = users.find((u) => u.username === body.username || u.email === body.email);
+    const existingUser = this.userStore.currentUsers.find(
+      (u: UserCreate) => u.username === body.username || u.email === body.email
+    );
 
     if (existingUser) {
       const message =
@@ -283,8 +255,8 @@ export class InMemoryDataService implements InMemoryDbService {
     }
 
     // Criar novo usuário
-    const newUser = {
-      id: users.length + 1,
+    const newUser: UserCreate = {
+      id: this.userStore.getNextId(),
       username: body.username,
       password: body.password,
       email: body.email,
@@ -292,8 +264,8 @@ export class InMemoryDataService implements InMemoryDbService {
       name: body.name,
     };
 
-    // Adicionar ao array de usuários (simulação de persistência)
-    users.push(newUser);
+    // Adicionar ao UserStore
+    this.userStore.addUser(newUser);
 
     const response = {
       success: true,
@@ -342,23 +314,15 @@ export class InMemoryDataService implements InMemoryDbService {
 
     console.log('📝 Create post attempt:', { title: body.title });
 
-    const db = this.createDb();
-    const posts = db.posts;
-
-    // Criar novo post
-    const newPost = {
-      id: posts.length + 1,
+    // Usar PostStore para criar o post
+    const newPost = this.postStore.addPost({
       title: body.title,
       content: body.content,
       status: body.status || 'draft',
       authorId: body.authorId,
       author: body.author,
-      createdAt: new Date().toISOString(),
       tags: body.tags || [],
-    };
-
-    // Adicionar ao array de posts
-    posts.push(newPost);
+    });
 
     console.log('✅ Post created successfully:', newPost.title);
 
@@ -376,30 +340,23 @@ export class InMemoryDataService implements InMemoryDbService {
 
     console.log('📝 Update post attempt:', { id: postId, title: body.title });
 
-    const db = this.createDb();
-    const posts = db.posts;
-    const postIndex = posts.findIndex((p) => p.id === postId);
+    // Usar PostStore para atualizar o post
+    const updatedPost = this.postStore.updatePost(postId, {
+      title: body.title,
+      content: body.content,
+      status: body.status,
+      authorId: body.authorId,
+      author: body.author,
+      tags: body.tags,
+    });
 
-    if (postIndex === -1) {
+    if (!updatedPost) {
       return reqInfo.utils.createResponse$(() => ({
         status: 404,
         headers: headers,
         body: { message: 'Post não encontrado' },
       }));
     }
-
-    // Atualizar post mantendo campos obrigatórios
-    const updatedPost = {
-      ...posts[postIndex],
-      title: body.title || posts[postIndex].title,
-      content: body.content || posts[postIndex].content,
-      status: body.status || posts[postIndex].status,
-      authorId: body.authorId || posts[postIndex].authorId,
-      author: body.author || posts[postIndex].author,
-      tags: body.tags || posts[postIndex].tags,
-    };
-
-    posts[postIndex] = updatedPost;
 
     console.log('✅ Post updated successfully:', updatedPost.title);
 
@@ -416,11 +373,10 @@ export class InMemoryDataService implements InMemoryDbService {
 
     console.log('🗑️ Delete post attempt:', { id: postId });
 
-    const db = this.createDb();
-    const posts = db.posts;
-    const postIndex = posts.findIndex((p) => p.id === postId);
+    // Usar PostStore para deletar o post
+    const deleted = this.postStore.removePost(postId);
 
-    if (postIndex === -1) {
+    if (!deleted) {
       return reqInfo.utils.createResponse$(() => ({
         status: 404,
         headers: headers,
@@ -428,10 +384,7 @@ export class InMemoryDataService implements InMemoryDbService {
       }));
     }
 
-    const deletedPost = posts[postIndex];
-    posts.splice(postIndex, 1);
-
-    console.log('✅ Post deleted successfully:', deletedPost.title);
+    console.log('✅ Post deleted successfully');
 
     return reqInfo.utils.createResponse$(() => ({
       status: 200,
@@ -464,11 +417,8 @@ export class InMemoryDataService implements InMemoryDbService {
 
     console.log('👤 Create user attempt:', { email: body.email });
 
-    const db = this.createDb();
-    const users = db.users;
-
     // Verificar se email já existe
-    const existingUser = users.find((u) => u.email === body.email);
+    const existingUser = this.userStore.getUserByEmail(body.email);
     if (existingUser) {
       return reqInfo.utils.createResponse$(() => ({
         status: 400,
@@ -476,25 +426,17 @@ export class InMemoryDataService implements InMemoryDbService {
       }));
     }
 
-    // Gerar novo ID
-    const maxId = Math.max(...users.map((u) => u.id));
-
-    const newUser = {
-      id: maxId + 1,
+    const newUser: UserCreate = {
+      id: this.userStore.getNextId(),
       name: body.name,
       email: body.email,
       username: body.username || body.email.split('@')[0],
       password: body.password || 'password123',
       role: body.role || 'author',
-      avatar: body.avatar || '',
-      bio: body.bio || '',
-      socialLinks: body.socialLinks || {},
-      createdAt: new Date().toISOString(),
-      isActive: true,
     };
 
-    // Adicionar usuário
-    users.push(newUser);
+    // Adicionar usuário ao UserStore
+    this.userStore.addUser(newUser);
 
     console.log('✅ User created successfully:', newUser.email);
 
@@ -510,11 +452,8 @@ export class InMemoryDataService implements InMemoryDbService {
 
     console.log('👤 Update user attempt:', { userId, email: body.email });
 
-    const db = this.createDb();
-    const users = db.users;
-
-    const userIndex = users.findIndex((u) => u.id === userId);
-    if (userIndex === -1) {
+    const existingUser = this.userStore.getUserById(userId);
+    if (!existingUser) {
       return reqInfo.utils.createResponse$(() => ({
         status: 404,
         body: { error: 'Usuário não encontrado' },
@@ -522,24 +461,21 @@ export class InMemoryDataService implements InMemoryDbService {
     }
 
     // Verificar se email já existe em outro usuário
-    if (body.email) {
-      const existingUser = users.find((u) => u.email === body.email && u.id !== userId);
-      if (existingUser) {
-        return reqInfo.utils.createResponse$(() => ({
-          status: 400,
-          body: { error: 'Email já está em uso' },
-        }));
-      }
+    if (body.email && this.userStore.emailExists(body.email, userId)) {
+      return reqInfo.utils.createResponse$(() => ({
+        status: 400,
+        body: { error: 'Email já está em uso' },
+      }));
     }
 
     // Atualizar usuário
-    const updatedUser = {
-      ...users[userIndex],
+    const updatedUser: UserCreate = {
+      ...existingUser,
       ...body,
       id: userId, // Manter o ID original
     };
 
-    users[userIndex] = updatedUser;
+    this.userStore.updateUser(updatedUser);
 
     console.log('✅ User updated successfully:', updatedUser.email);
 
@@ -554,11 +490,8 @@ export class InMemoryDataService implements InMemoryDbService {
 
     console.log('👤 Delete user attempt:', { userId });
 
-    const db = this.createDb();
-    const users = db.users;
-
-    const userIndex = users.findIndex((u) => u.id === userId);
-    if (userIndex === -1) {
+    const userToDelete = this.userStore.getUserById(userId);
+    if (!userToDelete) {
       return reqInfo.utils.createResponse$(() => ({
         status: 404,
         body: { error: 'Usuário não encontrado' },
@@ -566,13 +499,13 @@ export class InMemoryDataService implements InMemoryDbService {
     }
 
     // Remover usuário
-    const deletedUser = users.splice(userIndex, 1)[0];
+    this.userStore.removeUser(userId);
 
-    console.log('✅ User deleted successfully:', deletedUser.email);
+    console.log('✅ User deleted successfully:', userToDelete.email);
 
     return reqInfo.utils.createResponse$(() => ({
       status: 200,
-      body: { message: 'Usuário removido com sucesso', user: deletedUser },
+      body: { message: 'Usuário removido com sucesso', user: userToDelete },
     }));
   }
 }

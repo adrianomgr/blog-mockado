@@ -10,6 +10,7 @@ import { CardModule } from 'primeng/card';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
+import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 
 // Services
@@ -26,6 +27,7 @@ import { SignUpService } from '../../../../infrastructure/api/sign-up.service';
     PasswordModule,
     CardModule,
     FloatLabelModule,
+    SelectModule,
     ToastModule,
   ],
   providers: [MessageService],
@@ -35,6 +37,12 @@ import { SignUpService } from '../../../../infrastructure/api/sign-up.service';
 export class SingUpViewComponent {
   signupForm: FormGroup;
   isLoading = false;
+
+  roleOptions = [
+    { label: 'Assinante', value: 'subscriber' },
+    { label: 'Autor', value: 'author' },
+    { label: 'Editor', value: 'editor' },
+  ];
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -48,6 +56,7 @@ export class SingUpViewComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]],
+      role: ['subscriber', [Validators.required]],
     });
   }
 
@@ -61,7 +70,7 @@ export class SingUpViewComponent {
         email: formData.email,
         password: formData.password,
         name: formData.name,
-        role: 'subscriber', // Role padrão para novos usuários
+        role: formData.role,
       };
 
       this.signUpService.signUp(signUpData).subscribe({

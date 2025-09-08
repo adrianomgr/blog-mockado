@@ -1,4 +1,6 @@
 export enum ProfileEnum {
   ADMIN = 'admin',
-  USER = 'user'
+  EDITOR = 'editor',
+  AUTHOR = 'author',
+  SUBSCRIBER = 'subscriber',
 }

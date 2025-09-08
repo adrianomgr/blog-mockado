@@ -23,3 +23,63 @@
   font-weight: 600;
   letter-spacing: 0.5px;
 }
+
+// Estilos para o dialog de credenciais de teste
+:host ::ng-deep .p-dialog {
+  .p-dialog-header {
+    background: var(--p-primary-50);
+    border-bottom: 2px solid var(--p-primary-100);
+
+    .p-dialog-title {
+      font-weight: 600;
+      color: var(--p-primary-700);
+    }
+  }
+
+  .p-dialog-content {
+    padding: 1.5rem !important;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .p-datatable {
+    font-size: 0.875rem;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    .p-datatable-header {
+      background: var(--p-surface-100);
+      border-bottom: 2px solid var(--p-surface-200);
+    }
+
+    th {
+      font-weight: 600;
+      background-color: var(--p-surface-100);
+      padding: 0.75rem !important;
+      border-bottom: 2px solid var(--p-surface-200);
+      text-align: left;
+    }
+
+    td {
+      padding: 0.75rem !important;
+      border-bottom: 1px solid var(--p-surface-100);
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background-color: var(--p-surface-50);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+// Estilo para o código da senha
+code {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 600;
+  color: var(--p-primary-700);
+}

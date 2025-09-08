@@ -1,58 +1,134 @@
 <div class="login-wrapper">
-    <p-card class="login-card">
-        <ng-template pTemplate="header">
-            <div class="card-header">
-                <h1>Login</h1>
-            </div>
-        </ng-template>
+  <p-card class="login-card">
+    <ng-template pTemplate="header">
+      <div class="card-header">
+        <h1>Login</h1>
+      </div>
+    </ng-template>
 
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form">
-            <div class="my-8">
-                <p-floatlabel>
-                    <input
-                        class="w-full"
-                        pInputText
-                        id="username"
-                        formControlName="username"
-                    />
-                    <label for="username">Usuário</label>
-                </p-floatlabel>
-            </div>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form">
+      <div class="my-8">
+        <p-floatlabel>
+          <input class="w-full" pInputText id="username" formControlName="username" />
+          <label for="username">Usuário</label>
+        </p-floatlabel>
+      </div>
 
-            <div class="my-8">
-                <p-floatlabel>
-                    <p-password
-                        class="block w-full"
-                        inputId="password"
-                        formControlName="password"
-                        [feedback]="false"
-                        [toggleMask]="true"
-                        inputStyleClass="w-full"
-                    ></p-password>
-                    <label for="password">Senha</label>
-                </p-floatlabel>
-            </div>
+      <div class="my-8">
+        <p-floatlabel>
+          <p-password
+            class="block w-full"
+            inputId="password"
+            formControlName="password"
+            [feedback]="false"
+            [toggleMask]="true"
+            inputStyleClass="w-full"
+          ></p-password>
+          <label for="password">Senha</label>
+        </p-floatlabel>
+      </div>
 
-            <div class="actions">
-                <p-button
-                    class="block my-4"
-                    type="submit"
-                    label="Entrar"
-                    [loading]="loading"
-                    [disabled]="loading"
-                    styleClass="w-full"
-                ></p-button>
-                <p-button
-                    class="mt-2"
-                    type="button"
-                    label="Criar nova conta"
-                    severity="secondary"
-                    styleClass="w-full"
-                    routerLink="/login/signup"
-                ></p-button>
-            </div>
-        </form>
-    </p-card>
+      <div class="actions">
+        <p-button
+          class="block my-4"
+          type="submit"
+          label="Entrar"
+          [loading]="loading"
+          [disabled]="loading"
+          styleClass="w-full"
+        ></p-button>
+
+        <p-button
+          class="block my-4"
+          type="button"
+          label="Criar nova conta"
+          severity="secondary"
+          styleClass="w-full"
+          routerLink="/login/signup"
+        ></p-button>
+
+        <!-- Botão para mostrar credenciais de teste -->
+        <p-button
+          class="block my-4"
+          type="button"
+          label="Ver Credenciais de Teste"
+          severity="info"
+          styleClass="w-full"
+          [outlined]="true"
+          (onClick)="toggleTestCredentials()"
+          icon="pi pi-info-circle"
+        ></p-button>
+      </div>
+    </form>
+
+    <!-- Componente de estatísticas em tempo real -->
+    <app-user-counter></app-user-counter>
+  </p-card>
 </div>
+
+<!-- Dialog de credenciais de teste -->
+<p-dialog
+  header="Credenciais de Teste"
+  [(visible)]="showTestCredentials"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="true"
+  [style]="{ width: '800px', maxWidth: '90vw' }"
+>
+  <p class="text-sm text-gray-600 mb-4">
+    <i class="pi pi-info-circle mr-2"></i>
+    Use uma das credenciais abaixo para testar o sistema. Clique em "Usar" para preencher
+    automaticamente os campos:
+  </p>
+  <p-table [value]="testUsers" styleClass="p-datatable-sm">
+    <ng-template pTemplate="header">
+      <tr>
+        <th scope="col">Nome</th>
+        <th scope="col">Usuário</th>
+        <th scope="col">Senha</th>
+        <th scope="col">Perfil</th>
+        <th scope="col">Ação</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+      <tr>
+        <td>{{ user.name }}</td>
+        <td>{{ user.username }}</td>
+        <td>
+          <code class="bg-gray-100 px-2 py-1 rounded text-xs">
+            {{ getTestPassword(user.username) }}
+          </code>
+        </td>
+        <td>
+          <p-tag
+            [value]="getRoleDisplayName(user.role)"
+            [severity]="
+              user.role === 'admin' ? 'danger' : user.role === 'editor' ? 'warning' : 'info'
+            "
+          ></p-tag>
+        </td>
+        <td>
+          <p-button
+            label="Usar"
+            icon="pi pi-arrow-right"
+            size="small"
+            (onClick)="useTestCredentials(user.username, getTestPassword(user.username))"
+          ></p-button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- Informações sobre os perfis -->
+  <div class="mt-4 p-3 bg-blue-50 border-l-4 border-blue-400 text-sm">
+    <p class="font-semibold mb-2">Informações sobre os perfis:</p>
+    <ul class="list-disc list-inside space-y-1 text-gray-700">
+      <li><strong>Administrador:</strong> Acesso total ao painel admin (posts e usuários)</li>
+      <li><strong>Editor:</strong> Acesso ao painel admin com foco em posts</li>
+      <li><strong>Usuário:</strong> Acesso apenas ao blog público</li>
+    </ul>
+  </div>
+</p-dialog>
 
 <p-toast></p-toast>
