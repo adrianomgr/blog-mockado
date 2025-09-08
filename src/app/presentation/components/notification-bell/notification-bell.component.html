@@ -41,7 +41,9 @@
             <div class="flex-1">
               <div class="flex justify-content-between align-items-start">
                 <h5 class="m-0 text-sm font-semibold">{{ notification.title }}</h5>
-                <small class="text-color-secondary">{{ getTimeAgo(notification.timestamp) }}</small>
+                <small class="text-color-secondary ml-2">{{
+                  notification.timestamp | timeAgo
+                }}</small>
               </div>
               <p class="m-0 mt-1 text-sm text-color-secondary">{{ notification.message }}</p>
 

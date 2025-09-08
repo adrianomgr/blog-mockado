@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NotificationFacadeService } from '@app/abstraction/notification.facade.service';
 import { Notification } from '@app/domain/model/notification';
+import { TimeAgoPipe } from '@app/presentation/pipe/time-ago.pipe';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -18,6 +19,7 @@ import { Subscription } from 'rxjs';
     DialogModule,
     ScrollPanelModule,
     TooltipModule,
+    TimeAgoPipe,
   ],
   templateUrl: './notification-bell.component.html',
   styleUrl: './notification-bell.component.scss',
@@ -40,20 +42,5 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-  }
-
-  getTimeAgo(timestamp: string): string {
-    const now = new Date();
-    const notificationTime = new Date(timestamp);
-    const diffInMinutes = Math.floor((now.getTime() - notificationTime.getTime()) / (1000 * 60));
-
-    if (diffInMinutes < 1) return 'Agora';
-    if (diffInMinutes < 60) return `${diffInMinutes}m`;
-
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    if (diffInHours < 24) return `${diffInHours}h`;
-
-    const diffInDays = Math.floor(diffInHours / 24);
-    return `${diffInDays}d`;
   }
 }
