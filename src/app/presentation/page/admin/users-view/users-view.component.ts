@@ -68,8 +68,7 @@ import { TooltipModule } from 'primeng/tooltip';
                 <th>Nome</th>
                 <th>Email</th>
                 <th>Função</th>
-                <th>Status</th>
-                <th>Último Login</th>
+                <th>Data da criação</th>
                 <th>Ações</th>
               </tr>
             </ng-template>
@@ -91,6 +90,7 @@ import { TooltipModule } from 'primeng/tooltip';
                     [severity]="getRoleSeverity(user.role)"
                   ></p-tag>
                 </td>
+                <td>{{ formatDate(user.createdAt) }}</td>
                 <td>
                   <p-button
                     icon="pi pi-pencil"
@@ -138,14 +138,6 @@ import { TooltipModule } from 'primeng/tooltip';
                 <option value="admin">Administrador</option>
                 <option value="editor">Editor</option>
                 <option value="subscriber">Assinante</option>
-              </select>
-            </div>
-
-            <div class="form-field">
-              <label for="status">Status *</label>
-              <select id="status" formControlName="status" class="p-inputtext w-full">
-                <option value="active">Ativo</option>
-                <option value="inactive">Inativo</option>
               </select>
             </div>
 
@@ -229,6 +221,16 @@ export class UsersViewComponent implements OnInit {
       .join('')
       .toUpperCase()
       .substring(0, 2);
+  }
+
+  formatDate(date: string | Date): string {
+    if (!date) return 'N/A';
+    const d = new Date(date);
+    return d.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
   }
 
   editUser(user: User) {

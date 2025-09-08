@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { PostFacadeService } from '@app/infrastructure/facade/post-facade.service';
+import { PostFacadeService } from '@app/abstraction/post-facade.service';
 import { Subscription } from 'rxjs';
 
 @Component({

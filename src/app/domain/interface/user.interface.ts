@@ -6,6 +6,7 @@ export interface User {
   email: string;
   role: ProfileEnum;
   name: string;
+  createdAt?: string | Date;
 }
 
 export interface CreateUserRequest {

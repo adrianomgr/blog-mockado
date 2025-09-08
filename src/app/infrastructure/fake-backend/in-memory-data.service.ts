@@ -29,6 +29,7 @@ export class InMemoryDataService implements InMemoryDbService {
         email: 'admin@example.com',
         role: 'admin',
         name: 'Administrador do Sistema',
+        createdAt: new Date('2025-01-15T08:30:00'),
       },
       {
         id: 2,
@@ -37,6 +38,7 @@ export class InMemoryDataService implements InMemoryDbService {
         email: 'editor@example.com',
         role: 'editor',
         name: 'Editor de Conteúdo',
+        createdAt: new Date('2025-02-20T14:15:00'),
       },
       {
         id: 3,
@@ -45,6 +47,7 @@ export class InMemoryDataService implements InMemoryDbService {
         email: 'user@example.com',
         role: 'subscriber',
         name: 'Usuário Padrão',
+        createdAt: new Date('2025-03-10T10:45:00'),
       },
     ];
 
@@ -60,9 +63,9 @@ export class InMemoryDataService implements InMemoryDbService {
     const posts = this.postStore.currentPosts;
     const notifications = this.notificationStore.currentNotifications;
 
-    console.log('🚀 InMemory Database initialized with users:', users);
-    console.log('📚 InMemory Database initialized with posts:', posts);
-    console.log('🔔 InMemory Database initialized with notifications:', notifications);
+    console.log('Database users:', users);
+    console.log('Database posts:', posts);
+    console.log('Database notifications:', notifications);
     return { users, posts, notifications };
   }
 
@@ -93,6 +96,7 @@ export class InMemoryDataService implements InMemoryDbService {
       email: u.email,
       role: u.role,
       name: u.name,
+      createdAt: u.createdAt,
     }));
     return reqInfo.utils.createResponse$(() => ({
       status: 200,
@@ -323,6 +327,7 @@ export class InMemoryDataService implements InMemoryDbService {
       email: body.email,
       role: body.role || 'subscriber',
       name: body.name,
+      createdAt: new Date(),
     };
 
     // Adicionar ao UserStore

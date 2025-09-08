@@ -4,9 +4,11 @@ import { Router } from '@angular/router';
 import { User } from '@app/domain/interface/user.interface';
 import { AuthService } from '@app/infrastructure/api/auth.service';
 import { NotificationBellComponent } from '@app/presentation/components/notification-bell.component';
+import { ConfirmationService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { Subject, takeUntil } from 'rxjs';
@@ -21,6 +23,7 @@ import { Subject, takeUntil } from 'rxjs';
     AvatarModule,
     TooltipModule,
     BadgeModule,
+    ConfirmDialogModule,
     NotificationBellComponent,
   ],
   templateUrl: './admin-header.component.html',
@@ -32,7 +35,11 @@ export class AdminHeaderComponent implements OnInit, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
-  constructor(private readonly router: Router, private readonly authService: AuthService) {}
+  constructor(
+    private readonly router: Router,
+    private readonly authService: AuthService,
+    private readonly confirmationService: ConfirmationService
+  ) {}
 
   ngOnInit(): void {
     this.loadCurrentUser();
@@ -84,7 +91,19 @@ export class AdminHeaderComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/login']);
+    this.confirmationService.confirm({
+      message: 'Tem certeza que deseja fazer logout?',
+      header: 'Confirmação de Logout',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sim, fazer logout',
+      rejectLabel: 'Cancelar',
+      accept: () => {
+        this.authService.logout();
+        this.router.navigate(['/login']);
+      },
+      reject: () => {
+        // Usuário cancelou, não faz nada
+      },
+    });
   }
 }

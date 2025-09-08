@@ -10,6 +10,7 @@ import { provideRouter } from '@angular/router';
 import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
 import Aura from '@primeuix/themes/aura';
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { ConfirmationService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 
 import { routes } from './app.routes';
@@ -27,6 +28,7 @@ export const appConfig: ApplicationConfig = {
         preset: Aura,
       },
     }),
+    ConfirmationService,
     JwtHelperService,
     {
       provide: JWT_OPTIONS,

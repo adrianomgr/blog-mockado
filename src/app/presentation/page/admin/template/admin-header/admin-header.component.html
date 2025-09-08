@@ -4,8 +4,11 @@
       icon="pi pi-bars"
       styleClass="p-button-text p-button-plain md:hidden"
       (click)="toggleMobileMenu()"
+      (keydown.enter)="toggleMobileMenu()"
+      (keydown.space)="toggleMobileMenu()"
       pTooltip="Menu"
       tooltipPosition="bottom"
+      ariaLabel="Alternar menu mobile"
     ></p-button>
 
     <div class="text-xl font-bold text-primary ml-2">Blog Admin</div>
@@ -33,12 +36,22 @@
 
       <!-- Menu do usuário -->
       <p-button
-        icon="pi pi-angle-down"
-        styleClass="p-button-text p-button-plain"
+        icon="pi pi-sign-out"
+        styleClass="p-button-text p-button-plain logout-button"
         (click)="logout()"
+        (keydown.enter)="logout()"
+        (keydown.space)="logout()"
         pTooltip="Logout"
         tooltipPosition="bottom"
+        ariaLabel="Fazer logout"
       ></p-button>
     </div>
   </div>
 </p-toolbar>
+
+<!-- Dialog de confirmação -->
+<p-confirmDialog
+  [style]="{ width: '450px' }"
+  [baseZIndex]="10000"
+  rejectButtonStyleClass="p-button-text"
+></p-confirmDialog>

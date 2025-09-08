@@ -37,11 +37,27 @@
   }
 }
 
-// Responsividade
-@media (max-width: 768px) {
-  :host {
-    .hidden {
-      display: none !important;
+::ng-deep .logout-button {
+  background-color: #e74c3c !important;
+  color: white !important;
+  border: 1px solid #e74c3c !important;
+
+  .p-button-icon {
+    color: white !important;
+  }
+
+  &:hover {
+    background-color: #c0392b !important;
+    border-color: #c0392b !important;
+    color: white !important;
+
+    .p-button-icon {
+      color: white !important;
     }
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.3) !important;
+    background-color: #e74c3c !important;
   }
 }

@@ -5,6 +5,7 @@ export class UserCreate {
   email: string;
   role: string;
   name: string;
+  createdAt?: string | Date;
 
   constructor(
     id: number,
@@ -12,7 +13,8 @@ export class UserCreate {
     password: string,
     email: string,
     role: string,
-    name: string
+    name: string,
+    createdAt?: string | Date
   ) {
     this.id = id;
     this.username = username;
@@ -20,5 +22,6 @@ export class UserCreate {
     this.email = email;
     this.role = role;
     this.name = name;
+    this.createdAt = createdAt;
   }
 }
