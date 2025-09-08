@@ -31,7 +31,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class AdminHeaderComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
-  notificationCount = 5; // Valor fixo por enquanto
+  notificationCount = 0;
 
   private readonly destroy$ = new Subject<void>();
 

@@ -14,6 +14,8 @@ import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 
 // Services
+import { Constants } from '@app/constants';
+import { ProfileEnum } from '@app/domain/enum/profile.enum';
 import { SignUpService } from '@app/infrastructure/api/sign-up.service';
 
 @Component({
@@ -38,11 +40,10 @@ export class SingUpViewComponent {
   signupForm: FormGroup;
   isLoading = false;
 
-  roleOptions = [
-    { label: 'Assinante', value: 'subscriber' },
-    { label: 'Autor', value: 'author' },
-    { label: 'Editor', value: 'editor' },
-  ];
+  roleOptions = Object.entries(Constants.descricoesProfile).map(([key, value]) => ({
+    value: key as ProfileEnum,
+    label: value,
+  }));
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -56,7 +57,7 @@ export class SingUpViewComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]],
-      role: ['subscriber', [Validators.required]],
+      role: ['', [Validators.required]],
     });
   }
 

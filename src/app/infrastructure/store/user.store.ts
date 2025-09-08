@@ -91,10 +91,4 @@ export class UserStore {
   getUserCount(): number {
     return this.currentUsers.length;
   }
-
-  // Método para limpar todos os usuários (útil para testes)
-  clearUsers(): void {
-    this.usersSubject.next([]);
-    console.log('🧹 UserStore cleared');
-  }
 }
