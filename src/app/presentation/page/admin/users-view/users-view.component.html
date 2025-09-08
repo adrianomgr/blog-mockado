@@ -12,7 +12,7 @@
         [rows]="10"
         [showCurrentPageReport]="true"
         currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuários"
-        [globalFilterFields]="['name', 'email', 'role']"
+        [globalFilterFields]="['name', 'username', 'email', 'role']"
         #dt
       >
         <ng-template pTemplate="caption">
@@ -33,6 +33,7 @@
           <tr>
             <th scope="col">Avatar</th>
             <th scope="col">Nome</th>
+            <th scope="col">Username</th>
             <th scope="col">Email</th>
             <th scope="col">Função</th>
             <th scope="col">Data da criação</th>
@@ -50,6 +51,7 @@
               ></p-avatar>
             </td>
             <td>{{ user.name }}</td>
+            <td>{{ user.username }}</td>
             <td>{{ user.email }}</td>
             <td>
               <p-tag
@@ -95,6 +97,11 @@
         </div>
 
         <div class="form-field">
+          <label for="username">Username *</label>
+          <input id="username" type="text" pInputText formControlName="username" class="w-full" />
+        </div>
+
+        <div class="form-field">
           <label for="email">Email *</label>
           <input id="email" type="email" pInputText formControlName="email" class="w-full" />
         </div>
@@ -119,6 +126,20 @@
             [toggleMask]="true"
             class="w-full"
           ></p-password>
+        </div>
+
+        <div class="form-field">
+          <label for="confirmPassword">Confirmar Senha *</label>
+          <p-password
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            [feedback]="false"
+            [toggleMask]="true"
+            class="w-full"
+          ></p-password>
+          @if (userForm.get('confirmPassword')?.touched && userForm.hasError('passwordMismatch')) {
+          <small class="p-error"> As senhas não coincidem </small>
+          }
         </div>
         }
       </div>

@@ -50,10 +50,8 @@
   </div>
 
   <!-- Seção de Tags -->
-  <div
-    class="tags-section"
-    *ngIf="statistics && statistics.uniqueTags && statistics.uniqueTags.length > 0"
-  >
+  @if (statistics && statistics.uniqueTags && statistics.uniqueTags.length > 0) {
+  <div class="tags-section">
     <div class="tags-header">
       <h4>
         <i class="pi pi-bookmark"></i>
@@ -61,13 +59,13 @@
       </h4>
     </div>
     <div class="tags-container">
-      <span *ngFor="let tag of statistics.uniqueTags.slice(0, 8)" class="tag-item">
+      @for (tag of statistics.uniqueTags; track tag) {
+      <span class="tag-item">
         <i class="pi pi-tag"></i>
         {{ tag }}
       </span>
-      <span *ngIf="statistics.uniqueTags.length > 8" class="tag-more">
-        +{{ statistics.uniqueTags.length - 8 }} mais
-      </span>
+      }
     </div>
   </div>
+  }
 </div>

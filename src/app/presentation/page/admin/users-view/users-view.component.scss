@@ -47,6 +47,12 @@
         font-weight: 600;
         color: var(--p-text-color);
       }
+
+      small.p-error {
+        font-size: 0.875rem;
+        margin-top: 4px;
+        color: var(--p-red-500);
+      }
     }
   }
 

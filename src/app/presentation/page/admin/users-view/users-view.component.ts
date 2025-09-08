@@ -5,6 +5,7 @@ import { UserFacadeService } from '@app/abstraction/user-facade.service';
 import { User } from '@app/domain/model/user';
 import { CreateUserRequest } from '@app/infrastructure/contract/request/create-user.request';
 import { UpdateUserRequest } from '@app/infrastructure/contract/request/update-user.request';
+import { passwordMatchValidator } from '@app/presentation/validators';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
@@ -65,13 +66,17 @@ export class UsersViewComponent implements OnInit {
   }
 
   private initForm() {
-    this.userForm = this.fb.group({
-      name: ['', Validators.required],
-      username: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      role: ['author', Validators.required],
-      password: ['', Validators.required],
-    });
+    this.userForm = this.fb.group(
+      {
+        name: ['', Validators.required],
+        username: ['', Validators.required],
+        email: ['', [Validators.required, Validators.email]],
+        role: ['author', Validators.required],
+        password: ['', Validators.required],
+        confirmPassword: ['', Validators.required],
+      },
+      { validators: passwordMatchValidator() }
+    );
   }
 
   private loadUsers() {
@@ -79,15 +84,9 @@ export class UsersViewComponent implements OnInit {
     this.userFacade
       .getAllUsers()
       .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: (users: User[]) => {
-          this.users = users;
-          this.loading = false;
-        },
-        error: (error: any) => {
-          console.error('Erro ao carregar usuários:', error);
-          this.loading = false;
-        },
+      .subscribe((users: User[]) => {
+        this.users = users;
+        this.loading = false;
       });
   }
 
@@ -121,6 +120,8 @@ export class UsersViewComponent implements OnInit {
     });
     this.userForm.get('password')?.clearValidators();
     this.userForm.get('password')?.updateValueAndValidity();
+    this.userForm.get('confirmPassword')?.clearValidators();
+    this.userForm.get('confirmPassword')?.updateValueAndValidity();
     this.isEditMode = true;
     this.displayDialog = true;
   }
@@ -131,18 +132,13 @@ export class UsersViewComponent implements OnInit {
       header: 'Confirmar Exclusão',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.userFacade.deleteUser(user.id).subscribe({
-          next: () => {
-            this.loadUsers();
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Sucesso',
-              detail: 'Usuário deletado com sucesso',
-            });
-          },
-          error: (error: any) => {
-            console.error('Erro ao deletar usuário:', error);
-          },
+        this.userFacade.deleteUser(user.id).subscribe(() => {
+          this.loadUsers();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Usuário deletado com sucesso',
+          });
         });
       },
     });
@@ -157,6 +153,8 @@ export class UsersViewComponent implements OnInit {
     });
     this.userForm.get('password')?.setValidators([Validators.required]);
     this.userForm.get('password')?.updateValueAndValidity();
+    this.userForm.get('confirmPassword')?.setValidators([Validators.required]);
+    this.userForm.get('confirmPassword')?.updateValueAndValidity();
     this.displayDialog = true;
   }
 
