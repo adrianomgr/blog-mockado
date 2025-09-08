@@ -1,16 +1,20 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { NotificationTypeEnum } from '@app/domain/enum/notification-type.enum';
 import { PostStatusEnum } from '@app/domain/enum/post-status.enum';
+import { NovoNotification } from '@app/domain/model/novo-notification';
 import { Post } from '@app/domain/model/post';
 import { PostCreate } from '@app/domain/model/post-create';
 import { AuthApiService } from '@app/infrastructure/api/auth.api.service';
+import { NotificationApiService } from '@app/infrastructure/api/notification.api.service';
 import { PostApiService } from '@app/infrastructure/api/post.api.service';
+import { CreateNotificationRequest } from '@app/infrastructure/contract/request/create-notification.request';
 import { CreatePostRequest } from '@app/infrastructure/contract/request/create-post.request';
 import { UpdatePostRequest } from '@app/infrastructure/contract/request/update-post.request';
 import { ErroResponse } from '@app/infrastructure/contract/response/erro.response';
 import { PostResponse } from '@app/infrastructure/contract/response/post.response';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +22,8 @@ import { catchError, map } from 'rxjs/operators';
 export class PostFacadeService {
   constructor(
     private readonly postApiService: PostApiService,
-    private readonly authApiService: AuthApiService
+    private readonly authApiService: AuthApiService,
+    private readonly notificationApiService: NotificationApiService
   ) {}
 
   // Buscar todos os posts
@@ -34,19 +39,22 @@ export class PostFacadeService {
     const currentUser = this.authApiService.getCurrentUser();
 
     const request = new CreatePostRequest({
-      title: post.title,
-      content: post.content,
-      status: post.status,
-      tags: post.tags,
+      ...post,
       authorId: currentUser!.id,
       author: currentUser!.name,
     });
 
-    return this.postApiService
-      .createPost(request)
-      .pipe(
-        catchError((erro: HttpErrorResponse) => throwError(() => ErroResponse.converter(erro)))
-      );
+    return this.postApiService.createPost(request).pipe(
+      mergeMap(() => {
+        // Criar notificação usando o novo modelo
+        const notification = new NovoNotification(NotificationTypeEnum.NEW_POST, post);
+        const notificationRequest = new CreateNotificationRequest(notification.toCreateRequest());
+
+        return this.notificationApiService.createNotification(notificationRequest);
+      }),
+      map(() => void 0),
+      catchError((erro: HttpErrorResponse) => throwError(() => ErroResponse.converter(erro)))
+    );
   }
 
   // Atualizar post

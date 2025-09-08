@@ -7,7 +7,7 @@ import { NotificationResponse } from '../contract/response/notification.response
 @Injectable({
   providedIn: 'root',
 })
-export class NotificationService {
+export class NotificationApiService {
   private readonly apiUrl = '/api/notifications';
 
   constructor(private readonly http: HttpClient) {}

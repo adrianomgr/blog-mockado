@@ -10,7 +10,7 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class NotificationStore {
-  private readonly mockNotifications: Notification[] = NotificationsMock as Notification[];
+  private readonly mockNotifications: Notification[] = NotificationsMock;
   private readonly notificationsSubject = new BehaviorSubject<Notification[]>(
     this.mockNotifications
   );

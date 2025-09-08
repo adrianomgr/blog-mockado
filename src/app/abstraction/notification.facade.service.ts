@@ -4,13 +4,13 @@ import { Notification } from '@app/domain/model/notification';
 import { ErroResponse } from '@app/infrastructure/contract/response/erro.response';
 import { NotificationResponse } from '@app/infrastructure/contract/response/notification.response';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { NotificationService } from '../infrastructure/api/notification.api.service';
+import { NotificationApiService } from '../infrastructure/api/notification.api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationFacadeService {
-  constructor(private readonly notificationService: NotificationService) {}
+  constructor(private readonly notificationService: NotificationApiService) {}
 
   getNotifications(): Observable<Notification[]> {
     return this.notificationService.getNotifications().pipe(
