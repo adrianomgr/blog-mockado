@@ -3,12 +3,17 @@ import { Observable, combineLatest, map } from 'rxjs';
 import { CreatePostRequest, Post, UpdatePostRequest } from '../../domain/interface/post.interface';
 import { PostStore } from '../store/post.store';
 import { UserStore } from '../store/user.store';
+import { NotificationFacadeService } from './notification-facade.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PostFacadeService {
-  constructor(private readonly postStore: PostStore, private readonly userStore: UserStore) {}
+  constructor(
+    private readonly postStore: PostStore,
+    private readonly userStore: UserStore,
+    private readonly notificationFacade: NotificationFacadeService
+  ) {}
 
   // Observable dos posts
   get posts$(): Observable<Post[]> {
@@ -77,9 +82,20 @@ export class PostFacadeService {
     return this.postStore.searchPosts(query);
   }
 
-  // Adicionar post
-  addPost(postData: CreatePostRequest): Post {
-    return this.postStore.addPost(postData);
+  // Adicionar post com notificação
+  addPost(postData: CreatePostRequest): Observable<Post> {
+    const newPost = this.postStore.addPost(postData);
+
+    // Criar notificação para o novo post
+    this.notificationFacade.createPostNotification(newPost.title).subscribe({
+      next: () => console.log('✅ Post notification created:', newPost.title),
+      error: (error) => console.error('❌ Error creating post notification:', error),
+    });
+
+    return new Observable((observer) => {
+      observer.next(newPost);
+      observer.complete();
+    });
   }
 
   // Atualizar post

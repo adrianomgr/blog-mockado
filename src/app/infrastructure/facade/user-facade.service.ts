@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserCreate } from '../../domain/model/user-create';
 import { UserStore } from '../store/user.store';
+import { NotificationFacadeService } from './notification-facade.service';
 
 /**
  * Facade para operações de usuários
@@ -12,7 +13,10 @@ import { UserStore } from '../store/user.store';
   providedIn: 'root',
 })
 export class UserFacadeService {
-  constructor(private readonly userStore: UserStore) {}
+  constructor(
+    private readonly userStore: UserStore,
+    private readonly notificationFacade: NotificationFacadeService
+  ) {}
 
   // Observable que emite sempre que a lista de usuários muda
   get users$(): Observable<UserCreate[]> {
@@ -72,14 +76,24 @@ export class UserFacadeService {
   }
 
   // Métodos para manipulação de dados
-  createUser(userData: Omit<UserCreate, 'id'>): UserCreate {
+  createUser(userData: Omit<UserCreate, 'id'>): Observable<UserCreate> {
     const newUser: UserCreate = {
       ...userData,
       id: this.userStore.getNextId(),
     };
 
     this.userStore.addUser(newUser);
-    return newUser;
+
+    // Criar notificação para o novo usuário
+    this.notificationFacade.createUserNotification(newUser.name).subscribe({
+      next: () => console.log('✅ User notification created:', newUser.name),
+      error: (error) => console.error('❌ Error creating user notification:', error),
+    });
+
+    return new Observable((observer) => {
+      observer.next(newUser);
+      observer.complete();
+    });
   }
 
   updateUser(userId: number, updates: Partial<UserCreate>): boolean {

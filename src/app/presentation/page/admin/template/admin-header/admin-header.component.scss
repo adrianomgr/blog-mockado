@@ -1,65 +1,47 @@
-.admin-header {
-  background: var(--p-surface-card) !important;
-  border-bottom: 1px solid var(--p-surface-border);
-  padding: 12px 24px !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+// Estilos específicos para o header admin
+:host {
+  .p-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 
-  .header-start {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-
-    .mobile-menu-btn {
-      display: none;
+    .p-toolbar-group-start {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
 
-    .header-title {
-      margin: 0;
-      color: var(--p-text-color);
-      font-size: 1.5rem;
-      font-weight: 600;
+    .p-toolbar-group-end {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
   }
 
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+  // Badge customizado para notificações
+  .p-badge {
+    min-width: 1.2rem;
+    height: 1.2rem;
+    line-height: 1.2rem;
+    font-size: 0.75rem;
+  }
 
-    .user-menu {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 8px 16px;
-      border-radius: var(--p-border-radius);
-      background: var(--p-surface-100);
+  // Avatar do usuário
+  .p-avatar {
+    cursor: pointer;
+    transition: all 0.2s ease;
 
-      .user-name {
-        font-weight: 500;
-        color: var(--p-text-color);
-      }
+    &:hover {
+      transform: scale(1.05);
     }
   }
 }
 
+// Responsividade
 @media (max-width: 768px) {
-  .admin-header {
-    .header-start {
-      .mobile-menu-btn {
-        display: block;
-      }
-
-      .header-title {
-        font-size: 1.2rem;
-      }
-    }
-
-    .header-actions {
-      .user-menu {
-        .user-name {
-          display: none;
-        }
-      }
+  :host {
+    .hidden {
+      display: none !important;
     }
   }
 }

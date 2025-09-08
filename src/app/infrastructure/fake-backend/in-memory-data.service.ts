@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { InMemoryDbService, RequestInfo } from 'angular-in-memory-web-api';
 import { Observable } from 'rxjs';
 import { UserCreate } from '../../domain/model/user-create';
+import { NotificationStore } from '../store/notification.store';
 import { PostStore } from '../store/post.store';
 import { UserStore } from '../store/user.store';
 
@@ -9,7 +10,11 @@ import { UserStore } from '../store/user.store';
   providedIn: 'root',
 })
 export class InMemoryDataService implements InMemoryDbService {
-  constructor(private readonly userStore: UserStore, private readonly postStore: PostStore) {
+  constructor(
+    private readonly userStore: UserStore,
+    private readonly postStore: PostStore,
+    private readonly notificationStore: NotificationStore
+  ) {
     // Inicializar o UserStore com dados iniciais
     this.initializeDefaultUsers();
   }
@@ -50,18 +55,18 @@ export class InMemoryDataService implements InMemoryDbService {
   }
 
   createDb() {
-    // Usar os usuários do UserStore
+    // Usar os dados dos stores
     const users = this.userStore.currentUsers;
-
-    // Usar os posts do PostStore
     const posts = this.postStore.currentPosts;
+    const notifications = this.notificationStore.currentNotifications;
 
     console.log('🚀 InMemory Database initialized with users:', users);
     console.log('📚 InMemory Database initialized with posts:', posts);
-    return { users, posts };
+    console.log('🔔 InMemory Database initialized with notifications:', notifications);
+    return { users, posts, notifications };
   }
 
-  // Permitir GET /users e GET /posts
+  // Permitir GET /users, GET /posts e GET /notifications
   get(reqInfo: RequestInfo) {
     const db = this.createDb();
 
@@ -71,6 +76,10 @@ export class InMemoryDataService implements InMemoryDbService {
 
     if (reqInfo.collectionName === 'posts') {
       return this.handleGetPosts(reqInfo, db);
+    }
+
+    if (reqInfo.collectionName === 'notifications') {
+      return this.handleGetNotifications(reqInfo, db);
     }
 
     return undefined as any;
@@ -127,6 +136,56 @@ export class InMemoryDataService implements InMemoryDbService {
     }
   }
 
+  private handleGetNotifications(reqInfo: RequestInfo, db: any) {
+    // Verificar se é uma busca por ID específico
+    if (reqInfo.id) {
+      const notification = this.notificationStore.currentNotifications.find(
+        (n: any) => n.id === +reqInfo.id
+      );
+      if (notification) {
+        console.log('🔔 Get notification by ID:', reqInfo.id);
+        return reqInfo.utils.createResponse$(() => ({
+          status: 200,
+          headers: reqInfo.headers,
+          body: notification,
+        }));
+      } else {
+        return reqInfo.utils.createResponse$(() => ({
+          status: 404,
+          headers: reqInfo.headers,
+          body: { message: 'Notificação não encontrada' },
+        }));
+      }
+    }
+
+    // Filtros especiais para notificações
+    let filteredNotifications = [...this.notificationStore.currentNotifications];
+
+    // Filtro por não lidas
+    if (reqInfo.url.includes('/unread')) {
+      filteredNotifications = filteredNotifications.filter((n) => !n.read);
+      console.log('🔔 Get unread notifications:', filteredNotifications.length);
+    }
+
+    // Filtro por contagem de não lidas
+    if (reqInfo.url.includes('/unread-count')) {
+      const count = filteredNotifications.filter((n) => !n.read).length;
+      return reqInfo.utils.createResponse$(() => ({
+        status: 200,
+        headers: reqInfo.headers,
+        body: { count },
+      }));
+    }
+
+    // Retornar notificações filtradas
+    console.log('🔔 Get notifications:', filteredNotifications.length);
+    return reqInfo.utils.createResponse$(() => ({
+      status: 200,
+      headers: reqInfo.headers,
+      body: filteredNotifications,
+    }));
+  }
+
   private applyPostFilters(reqInfo: RequestInfo, posts: any[]) {
     let filteredPosts = [...posts];
 
@@ -170,7 +229,7 @@ export class InMemoryDataService implements InMemoryDbService {
     return filteredPosts;
   }
 
-  // Simulação dos endpoints de login, signup, posts e users
+  // Simulação dos endpoints de login, signup, posts, users e notifications
   post(reqInfo: RequestInfo): Observable<any> {
     if (reqInfo.collectionName === 'login') {
       return this.handleLogin(reqInfo);
@@ -180,6 +239,8 @@ export class InMemoryDataService implements InMemoryDbService {
       return this.handleCreatePost(reqInfo);
     } else if (reqInfo.collectionName === 'users') {
       return this.handleCreateUser(reqInfo);
+    } else if (reqInfo.collectionName === 'notifications') {
+      return this.handleCreateNotification(reqInfo);
     }
     return undefined as any;
   }
@@ -443,6 +504,28 @@ export class InMemoryDataService implements InMemoryDbService {
     return reqInfo.utils.createResponse$(() => ({
       status: 201,
       body: newUser,
+    }));
+  }
+
+  private handleCreateNotification(reqInfo: RequestInfo): Observable<any> {
+    const { headers } = reqInfo;
+    const body = reqInfo.utils.getJsonBody(reqInfo.req);
+
+    console.log('🔔 Create notification attempt:', { type: body.type, title: body.title });
+
+    // Usar NotificationStore para criar a notificação
+    const newNotification = this.notificationStore.addNotification({
+      type: body.type,
+      title: body.title,
+      message: body.message,
+    });
+
+    console.log('✅ Notification created successfully:', newNotification.title);
+
+    return reqInfo.utils.createResponse$(() => ({
+      status: 201,
+      headers: headers,
+      body: newNotification,
     }));
   }
 

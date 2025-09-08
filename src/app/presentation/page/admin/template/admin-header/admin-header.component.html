@@ -1,38 +1,52 @@
-<p-toolbar class="admin-header">
-  <ng-template pTemplate="start">
-    <div class="header-start">
-      <p-button
-        icon="pi pi-bars"
-        severity="secondary"
-        [text]="true"
-        class="mobile-menu-btn"
-        (onClick)="toggleMobileMenu()"
-      ></p-button>
-      <h2 class="header-title">Admin Dashboard</h2>
-    </div>
-  </ng-template>
+<p-toolbar styleClass="border-none px-6 bg-white shadow-2">
+  <div class="p-toolbar-group-start">
+    <p-button
+      icon="pi pi-bars"
+      styleClass="p-button-text p-button-plain md:hidden"
+      (click)="toggleMobileMenu()"
+      pTooltip="Menu"
+      tooltipPosition="bottom"
+    ></p-button>
 
-  <ng-template pTemplate="end">
-    <div class="header-actions">
+    <div class="text-xl font-bold text-primary ml-2">Blog Admin</div>
+  </div>
+
+  <div class="p-toolbar-group-end">
+    <!-- Sino de Notificações -->
+    <div class="mr-4">
       <p-button
         icon="pi pi-bell"
-        severity="secondary"
-        [text]="true"
-        [badge]="'3'"
+        styleClass="p-button-text p-button-plain"
+        [badge]="notificationCount > 0 ? notificationCount.toString() : ''"
         badgeClass="p-badge-danger"
+        (click)="showNotifications()"
+        pTooltip="Notificações"
+        tooltipPosition="bottom"
       ></p-button>
-
-      <div class="user-menu">
-        <p-avatar label="A" shape="circle" size="normal" styleClass="cursor-pointer"></p-avatar>
-        <span class="user-name">Admin</span>
-        <p-button
-          icon="pi pi-sign-out"
-          severity="secondary"
-          [text]="true"
-          (onClick)="logout()"
-          pTooltip="Sair"
-        ></p-button>
-      </div>
     </div>
-  </ng-template>
+
+    <!-- Informações do Usuário -->
+    <div class="flex align-items-center gap-2">
+      <p-avatar
+        [label]="currentUserInitials"
+        styleClass="bg-primary text-white"
+        shape="circle"
+        size="normal"
+      ></p-avatar>
+
+      <div class="hidden md:block">
+        <div class="text-sm font-medium text-900">{{ currentUserName }}</div>
+        <div class="text-xs text-600">{{ currentUserEmail }}</div>
+      </div>
+
+      <!-- Menu do usuário -->
+      <p-button
+        icon="pi pi-angle-down"
+        styleClass="p-button-text p-button-plain"
+        (click)="logout()"
+        pTooltip="Logout"
+        tooltipPosition="bottom"
+      ></p-button>
+    </div>
+  </div>
 </p-toolbar>
