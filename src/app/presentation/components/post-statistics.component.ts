@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { PostFacadeService } from '@app/infrastructure/facade/post-facade.service';
 import { CardModule } from 'primeng/card';
 import { Subscription } from 'rxjs';
-import { PostFacadeService } from '../../infrastructure/facade/post-facade.service';
 
 @Component({
   selector: 'app-post-statistics',

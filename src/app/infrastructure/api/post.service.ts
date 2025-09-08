@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CreatePostRequest, Post, UpdatePostRequest } from '@app/domain/interface/post.interface';
 import { Observable } from 'rxjs';
-import { CreatePostRequest, Post, UpdatePostRequest } from '../../domain/interface/post.interface';
 
 export interface PostResponse {
   success: boolean;

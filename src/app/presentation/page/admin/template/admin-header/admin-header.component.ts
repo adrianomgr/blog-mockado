@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { User } from '@app/domain/interface/user.interface';
+import { AuthService } from '@app/infrastructure/api/auth.service';
+import { NotificationBellComponent } from '@app/presentation/components/notification-bell.component';
 import { AvatarModule } from 'primeng/avatar';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { Subject, takeUntil } from 'rxjs';
-import { User } from '../../../../../domain/interface/user.interface';
-import { AuthService } from '../../../../../infrastructure/api/auth.service';
-import { NotificationBellComponent } from '../../../../components/notification-bell.component';
 
 @Component({
   selector: 'app-admin-header',

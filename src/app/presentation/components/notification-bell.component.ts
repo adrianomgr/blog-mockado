@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Notification } from '@app/domain/interface/notification.interface';
+import { NotificationFacadeService } from '@app/infrastructure/facade/notification-facade.service';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { TooltipModule } from 'primeng/tooltip';
 import { Subscription } from 'rxjs';
-import { Notification } from '../../domain/interface/notification.interface';
-import { NotificationFacadeService } from '../../infrastructure/facade/notification-facade.service';
 
 @Component({
   selector: 'app-notification-bell',

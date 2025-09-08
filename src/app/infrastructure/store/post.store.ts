@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { CreatePostRequest, Post, UpdatePostRequest } from '@app/domain/interface/post.interface';
 import { BehaviorSubject, Observable, map } from 'rxjs';
-import { CreatePostRequest, Post, UpdatePostRequest } from '../../domain/interface/post.interface';
 
 @Injectable({
   providedIn: 'root',

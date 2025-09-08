@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { PostStatisticsComponent } from '@app/presentation/components/post-statistics.component';
 import { CardModule } from 'primeng/card';
-import { PostStatisticsComponent } from '../../../components/post-statistics.component';
 
 interface DashboardStats {
   totalPosts: number;

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { UserStore } from '@app/infrastructure/store/user.store';
 import { Subject, takeUntil } from 'rxjs';
-import { UserStore } from '../../infrastructure/store/user.store';
 
 @Component({
   selector: 'app-user-counter',

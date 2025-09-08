@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { UserCreate } from '@app/domain/model/user-create';
 import { InMemoryDbService, RequestInfo } from 'angular-in-memory-web-api';
 import { Observable } from 'rxjs';
-import { UserCreate } from '../../domain/model/user-create';
 import { NotificationStore } from '../store/notification.store';
 import { PostStore } from '../store/post.store';
 import { UserStore } from '../store/user.store';

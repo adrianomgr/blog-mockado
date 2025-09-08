@@ -14,7 +14,7 @@ import { SelectModule } from 'primeng/select';
 import { ToastModule } from 'primeng/toast';
 
 // Services
-import { SignUpService } from '../../../../infrastructure/api/sign-up.service';
+import { SignUpService } from '@app/infrastructure/api/sign-up.service';
 
 @Component({
   selector: 'app-sing-up-view',

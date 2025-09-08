@@ -12,9 +12,9 @@ import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 
 // Domain imports
-import { PostFacade } from '../../../../abstraction/post.facade';
-import { Post } from '../../../../domain/interface/post.interface';
-import { AuthService } from '../../../../infrastructure/api/auth.service';
+import { PostFacade } from '@app/abstraction/post.facade';
+import { Post } from '@app/domain/interface/post.interface';
+import { AuthService } from '@app/infrastructure/api/auth.service';
 
 @Component({
   selector: 'app-post-view',

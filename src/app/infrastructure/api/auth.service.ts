@@ -1,27 +1,24 @@
-import { BehaviorSubject, Observable, tap } from "rxjs";
-import { User } from "../../domain/interface/user.interface";
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { JwtHelperService } from "@auth0/angular-jwt";
-import { LoginRequest } from "../contract/request/login.request";
-import { LoginResponse } from "../contract/response/login.response";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { User } from '@app/domain/interface/user.interface';
+import { LoginRequest } from '@app/infrastructure/contract/request/login.request';
+import { LoginResponse } from '@app/infrastructure/contract/response/login.response';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
-  
+
   private readonly isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
   private readonly TOKEN_KEY = 'jwt_token';
-  
-  constructor(
-    private readonly http: HttpClient,
-    private readonly jwtHelper: JwtHelperService
-  ) {
+
+  constructor(private readonly http: HttpClient, private readonly jwtHelper: JwtHelperService) {
     this.initializeAuth();
   }
 
@@ -36,16 +33,15 @@ export class AuthService {
 
   login(usuario: string, senha: string): Observable<LoginResponse> {
     const body = new LoginRequest(usuario, senha);
-    return this.http.post<LoginResponse>('/api/login', body)
-      .pipe(
-        tap(response => {
-          if (response.success && response.token && response.user) {
-            this.setToken(response.token);
-            this.currentUserSubject.next(LoginResponse.converter(response).user!);
-            this.isAuthenticatedSubject.next(true);
-          }
-        })
-      );
+    return this.http.post<LoginResponse>('/api/login', body).pipe(
+      tap((response) => {
+        if (response.success && response.token && response.user) {
+          this.setToken(response.token);
+          this.currentUserSubject.next(LoginResponse.converter(response).user!);
+          this.isAuthenticatedSubject.next(true);
+        }
+      })
+    );
   }
 
   logout(): void {

@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UserFacade } from '@app/abstraction/user.facade';
+import { User } from '@app/domain/interface/user.interface';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
@@ -11,8 +13,6 @@ import { PasswordModule } from 'primeng/password';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import { UserFacade } from '../../../../abstraction/user.facade';
-import { User } from '../../../../domain/interface/user.interface';
 
 @Component({
   selector: 'app-users-view',

@@ -17,11 +17,11 @@ import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
 
 // Services
-import { UserFacade } from '../../../../abstraction/user.facade';
-import { User } from '../../../../domain/interface/user.interface';
-import { AuthService } from '../../../../infrastructure/api/auth.service';
-import { UserStore } from '../../../../infrastructure/store/user.store';
-import { UserCounterComponent } from '../../../components/user-counter.component';
+import { UserFacade } from '@app/abstraction/user.facade';
+import { User } from '@app/domain/interface/user.interface';
+import { AuthService } from '@app/infrastructure/api/auth.service';
+import { UserStore } from '@app/infrastructure/store/user.store';
+import { UserCounterComponent } from '@app/presentation/components/user-counter.component';
 
 @Component({
   selector: 'app-login-view',
