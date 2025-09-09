@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { SignUpFacadeService } from '@app/abstraction/sign-up.facade.service';
 import { Constants } from '@app/constants';
 import { ProfileEnum } from '@app/domain/enum/profile.enum';
@@ -25,6 +25,7 @@ import { ToastModule } from 'primeng/toast';
   selector: 'app-sing-up-view',
   imports: [
     CommonModule,
+    RouterModule,
     ReactiveFormsModule,
     ButtonModule,
     InputTextModule,

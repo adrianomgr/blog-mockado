@@ -37,21 +37,19 @@
           [disabled]="loading"
           styleClass="w-full"
         ></p-button>
-
         <p-button
           class="block my-4"
           type="button"
-          label="Criar nova conta"
+          label="Ir ao Blog"
           severity="secondary"
           styleClass="w-full"
-          routerLink="/login/signup"
+          routerLink="/public-blog"
+          icon="pi pi-globe"
         ></p-button>
-
-        <!-- Botão para mostrar credenciais de teste -->
         <p-button
           class="block my-4"
           type="button"
-          label="Ver Credenciais de Teste"
+          label="Ver Credenciais de Login"
           severity="info"
           styleClass="w-full"
           [outlined]="true"
@@ -60,6 +58,21 @@
         ></p-button>
       </div>
     </form>
+
+    <ng-template pTemplate="footer">
+      <div class="login-footer">
+        <div class="signup-prompt">
+          <span>Não tem uma conta?</span>
+          <p-button
+            label="Criar Conta"
+            severity="info"
+            [text]="true"
+            routerLink="/login/signup"
+            styleClass="signup-link-btn"
+          ></p-button>
+        </div>
+      </div>
+    </ng-template>
   </p-card>
 </div>
 

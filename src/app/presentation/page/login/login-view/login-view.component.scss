@@ -83,3 +83,30 @@ code {
   font-weight: 600;
   color: var(--p-primary-700);
 }
+
+.login-footer {
+  text-align: center;
+  padding: 1rem;
+}
+
+.signup-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.signup-prompt span {
+  color: var(--p-text-color);
+  font-size: 0.9rem;
+}
+
+::ng-deep .signup-link-btn {
+  font-weight: 600 !important;
+  text-decoration: underline !important;
+
+  &:hover {
+    background-color: var(--p-primary-50) !important;
+  }
+}

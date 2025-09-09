@@ -111,11 +111,32 @@
         styleClass="w-full"
         severity="primary"
       ></p-button>
+
+      <!-- Botão para ir ao blog -->
+      <p-button
+        class="block my-4"
+        type="button"
+        label="Ir ao Blog"
+        severity="secondary"
+        styleClass="w-full"
+        [outlined]="true"
+        routerLink="/public-blog"
+        icon="pi pi-globe"
+      ></p-button>
     </form>
 
     <ng-template pTemplate="footer">
       <div class="signup-footer">
-        <p>Já tem uma conta? <a href="login">Entrar</a></p>
+        <div class="login-prompt">
+          <span>Já tem uma conta?</span>
+          <p-button
+            label="Entrar"
+            severity="info"
+            [text]="true"
+            routerLink="/login"
+            styleClass="login-link-btn"
+          ></p-button>
+        </div>
       </div>
     </ng-template>
   </p-card>

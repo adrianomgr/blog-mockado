@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { PostFacadeService } from '@app/abstraction/post.facade.service';
-import { PostStatusEnum } from '@app/domain/enum/post-status.enum';
+import { PublicBlogFacadeService } from '@app/abstraction/public-blog.facade.service';
 import { Post } from '@app/domain/model/post';
 import { UserInitialsPipe } from '@app/presentation/pipe/user-initials.pipe';
 import { AvatarModule } from 'primeng/avatar';
@@ -36,7 +35,7 @@ export class PublicBlogViewComponent implements OnInit, OnDestroy {
   loading = true;
   private readonly subscription = new Subscription();
 
-  constructor(private readonly postFacadeService: PostFacadeService) {}
+  constructor(private readonly publicBlogFacade: PublicBlogFacadeService) {}
 
   ngOnInit(): void {
     this.loadPublishedPosts();
@@ -48,17 +47,19 @@ export class PublicBlogViewComponent implements OnInit, OnDestroy {
 
   private loadPublishedPosts(): void {
     this.loading = true;
-    const postsSubscription = this.postFacadeService
-      .getPostsByStatus(PostStatusEnum.PUBLISHED)
-      .subscribe((posts) => {
-        this.posts = posts;
-        this.loading = false;
-      });
+    const postsSubscription = this.publicBlogFacade.getPostsPublished().subscribe((posts) => {
+      this.posts = posts;
+      this.loading = false;
+    });
 
     this.subscription.add(postsSubscription);
   }
 
   get filteredPosts(): Post[] {
     return this.posts;
+  }
+
+  get isAuthenticated(): boolean {
+    return this.publicBlogFacade.isAuthenticated();
   }
 }

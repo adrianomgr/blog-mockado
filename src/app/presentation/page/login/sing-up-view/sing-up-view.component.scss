@@ -23,3 +23,30 @@
   font-weight: 600;
   letter-spacing: 0.5px;
 }
+
+.signup-footer {
+  text-align: center;
+  padding: 1rem;
+}
+
+.login-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.login-prompt span {
+  color: var(--p-text-color);
+  font-size: 0.9rem;
+}
+
+::ng-deep .login-link-btn {
+  font-weight: 600 !important;
+  text-decoration: underline !important;
+
+  &:hover {
+    background-color: var(--p-primary-50) !important;
+  }
+}

@@ -6,13 +6,15 @@
         <p class="blog-subtitle">Compartilhando conhecimento</p>
       </div>
       <div class="header-actions">
+        @if (!isAuthenticated) {
         <p-button
           label="Login"
           icon="pi pi-sign-in"
-          severity="primary"
+          severity="secondary"
           routerLink="/login"
-          styleClass="login-btn mr-2"
+          styleClass="login-btn"
         ></p-button>
+        } @else {
         <p-button
           label="Área Admin"
           icon="pi pi-cog"
@@ -20,6 +22,7 @@
           routerLink="/admin"
           styleClass="admin-btn"
         ></p-button>
+        }
       </div>
     </div>
   </header>
