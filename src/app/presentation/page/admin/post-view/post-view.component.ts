@@ -5,6 +5,8 @@ import { PostFacadeService } from '@app/abstraction/post.facade.service';
 import { Post } from '@app/domain/model/post';
 import { PostCreate } from '@app/domain/model/post-create';
 import { UpdatePostRequest } from '@app/infrastructure/contract/request/update-post.request';
+import { PostStatusLabelPipe } from '@app/presentation/pipe/post-status-label.pipe';
+import { PostStatusSeverityPipe } from '@app/presentation/pipe/post-status-severity.pipe';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -28,6 +30,8 @@ import { ToastModule } from 'primeng/toast';
     TagModule,
     ToastModule,
     ConfirmDialogModule,
+    PostStatusLabelPipe,
+    PostStatusSeverityPipe,
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './post-view.component.html',
@@ -103,6 +107,10 @@ export class PostViewComponent implements OnInit {
       message: `Tem certeza que deseja deletar o post "${post.title}"?`,
       header: 'Confirmar Exclusão',
       icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sim, deletar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
         this.postFacade.deletePost(post.id).subscribe(() => {
           this.loadPosts();

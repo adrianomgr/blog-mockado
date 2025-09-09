@@ -51,8 +51,8 @@
             <td>{{ post.author }}</td>
             <td>
               <p-tag
-                [value]="post.status === 'published' ? 'Publicado' : 'Rascunho'"
-                [severity]="post.status === 'published' ? 'success' : 'warning'"
+                [value]="post.status | postStatusLabel"
+                [severity]="post.status | postStatusSeverity"
               ></p-tag>
             </td>
             <td>{{ post.createdAt | date : 'dd/MM/yyyy' }}</td>
@@ -126,3 +126,6 @@
     </form>
   </p-dialog>
 </div>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>

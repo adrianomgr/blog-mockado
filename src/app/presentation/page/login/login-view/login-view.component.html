@@ -98,12 +98,7 @@
           </code>
         </td>
         <td>
-          <p-tag
-            [value]="getRoleDisplayName(user.role)"
-            [severity]="
-              user.role === 'admin' ? 'danger' : user.role === 'editor' ? 'warning' : 'info'
-            "
-          ></p-tag>
+          <p-tag [value]="user.role | roleLabel" [severity]="user.role | roleSeverity"></p-tag>
         </td>
         <td>
           <p-button

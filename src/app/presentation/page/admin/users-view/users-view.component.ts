@@ -2,9 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserFacadeService } from '@app/abstraction/user-facade.service';
+import { Constants } from '@app/constants';
+import { ProfileEnum } from '@app/domain/enum/profile.enum';
 import { User } from '@app/domain/model/user';
 import { CreateUserRequest } from '@app/infrastructure/contract/request/create-user.request';
 import { UpdateUserRequest } from '@app/infrastructure/contract/request/update-user.request';
+import { RoleLabelPipe } from '@app/presentation/pipe/role-label.pipe';
+import { RoleSeverityPipe } from '@app/presentation/pipe/role-severity.pipe';
 import { UserInitialsPipe } from '@app/presentation/pipe/user-initials.pipe';
 import { passwordMatchValidator } from '@app/presentation/validators';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -38,6 +42,8 @@ import { finalize } from 'rxjs';
     TooltipModule,
     AvatarModule,
     UserInitialsPipe,
+    RoleLabelPipe,
+    RoleSeverityPipe,
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './users-view.component.html',
@@ -51,12 +57,10 @@ export class UsersViewComponent implements OnInit {
   isEditMode = false;
   selectedUser: User | null = null;
 
-  roleOptions = [
-    { value: 'admin', label: 'Administrador' },
-    { value: 'editor', label: 'Editor' },
-    { value: 'author', label: 'Autor' },
-    { value: 'subscriber', label: 'Assinante' },
-  ];
+  roleOptions = Object.entries(Constants.descricoesProfile).map(([key, value]) => ({
+    value: key as ProfileEnum,
+    label: value,
+  }));
 
   constructor(
     private readonly fb: FormBuilder,
@@ -76,7 +80,7 @@ export class UsersViewComponent implements OnInit {
         name: ['', Validators.required],
         username: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
-        role: ['author', Validators.required],
+        role: [ProfileEnum.AUTHOR, Validators.required],
         password: ['', Validators.required],
         confirmPassword: ['', Validators.required],
       },
@@ -95,16 +99,6 @@ export class UsersViewComponent implements OnInit {
       });
   }
 
-  formatDate(date: string | Date): string {
-    if (!date) return 'N/A';
-    const d = new Date(date);
-    return d.toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-  }
-
   editUser(user: User) {
     this.selectedUser = user;
     this.userForm.patchValue({
@@ -112,7 +106,6 @@ export class UsersViewComponent implements OnInit {
       username: user.username,
       email: user.email,
       role: user.role,
-      status: (user as any).status || 'active',
     });
     this.userForm.get('password')?.clearValidators();
     this.userForm.get('password')?.updateValueAndValidity();
@@ -149,7 +142,7 @@ export class UsersViewComponent implements OnInit {
     this.isEditMode = false;
     this.userForm.reset();
     this.userForm.patchValue({
-      role: 'author',
+      role: ProfileEnum.AUTHOR,
     });
     this.userForm.get('password')?.setValidators([Validators.required]);
     this.userForm.get('password')?.updateValueAndValidity();
@@ -195,19 +188,14 @@ export class UsersViewComponent implements OnInit {
           role: formValue.role,
         });
 
-        this.userFacade.createUser(createRequest).subscribe({
-          next: () => {
-            this.loadUsers();
-            this.hideDialog();
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Sucesso',
-              detail: 'Usuário criado com sucesso',
-            });
-          },
-          error: (error: any) => {
-            console.error('Erro ao criar usuário:', error);
-          },
+        this.userFacade.createUser(createRequest).subscribe(() => {
+          this.loadUsers();
+          this.hideDialog();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Usuário criado com sucesso',
+          });
         });
       }
     }
@@ -218,23 +206,5 @@ export class UsersViewComponent implements OnInit {
     this.selectedUser = null;
     this.isEditMode = false;
     this.userForm.reset();
-  }
-
-  getRoleLabel(role: any): string {
-    const roleMap: { [key: string]: string } = {
-      admin: 'Admin',
-      editor: 'Editor',
-      author: 'Autor',
-    };
-    return roleMap[role] || role;
-  }
-
-  getRoleSeverity(role: any): 'success' | 'info' | 'warning' | 'danger' {
-    const severityMap: { [key: string]: 'success' | 'info' | 'warning' | 'danger' } = {
-      admin: 'danger',
-      editor: 'warning',
-      author: 'info',
-    };
-    return severityMap[role] || 'info';
   }
 }

@@ -50,12 +50,9 @@
             <td>{{ user.username }}</td>
             <td>{{ user.email }}</td>
             <td>
-              <p-tag
-                [value]="getRoleLabel(user.role)"
-                [severity]="getRoleSeverity(user.role)"
-              ></p-tag>
+              <p-tag [value]="user.role | roleLabel" [severity]="user.role | roleSeverity"></p-tag>
             </td>
-            <td>{{ formatDate(user.createdAt) }}</td>
+            <td>{{ user.createdAt | date : 'dd/MM/yyyy' }}</td>
             <td>
               <p-button
                 icon="pi pi-pencil"

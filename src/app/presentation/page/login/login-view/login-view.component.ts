@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { LoginFacadeService } from '@app/abstraction/login.facade.service';
 import { User } from '@app/domain/model/user';
+import { RoleLabelPipe } from '@app/presentation/pipe/role-label.pipe';
+import { RoleSeverityPipe } from '@app/presentation/pipe/role-severity.pipe';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -31,6 +33,8 @@ import { finalize, Subject, takeUntil } from 'rxjs';
     TableModule,
     TagModule,
     DialogModule,
+    RoleLabelPipe,
+    RoleSeverityPipe,
   ],
   providers: [MessageService],
   templateUrl: './login-view.component.html',
@@ -92,16 +96,6 @@ export class LoginViewComponent implements OnInit, OnDestroy {
       detail: `Credenciais do usuário "${username}" foram preenchidas automaticamente`,
       life: 3000,
     });
-  }
-
-  getRoleDisplayName(role: string): string {
-    const roleMap: { [key: string]: string } = {
-      admin: 'Administrador',
-      editor: 'Editor',
-      author: 'Autor',
-      subscriber: 'Assinante',
-    };
-    return roleMap[role] || role;
   }
 
   onSubmit(): void {
