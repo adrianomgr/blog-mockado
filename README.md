@@ -180,6 +180,6 @@ npm run build
 
 ## 👨‍💻 Autor
 
-**Adriano Marques** - [GitHub](https://github.com/adrianomgr)
+**Adriano Gomes** - [GitHub](https://github.com/adrianomgr)
 
 ---
