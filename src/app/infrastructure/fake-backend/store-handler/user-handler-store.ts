@@ -15,7 +15,6 @@ export class UserHandlerStore {
 
   get currentUsers(): User[] {
     const users = this.usersSubject.value;
-    console.log('🔍 getCurrentUsers chamado, retornando:', users);
     return users;
   }
 
@@ -23,7 +22,6 @@ export class UserHandlerStore {
   addUser(user: User): void {
     const currentUsers = this.currentUsers;
     this.usersSubject.next([...currentUsers, user]);
-    console.log('UserStore:', user.username);
   }
 
   // Método para atualizar um usuário existente
@@ -35,7 +33,6 @@ export class UserHandlerStore {
       const updatedUsers = [...currentUsers];
       updatedUsers[userIndex] = updatedUser;
       this.usersSubject.next(updatedUsers);
-      console.log('UserStore:', updatedUser.username);
     }
   }
 
@@ -44,7 +41,6 @@ export class UserHandlerStore {
     const currentUsers = this.currentUsers;
     const filteredUsers = currentUsers.filter((u) => u.id !== userId);
     this.usersSubject.next(filteredUsers);
-    console.log('UserStore:', userId);
   }
 
   // Método para buscar usuário por ID

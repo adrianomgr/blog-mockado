@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   ApplicationConfig,
   importProvidersFrom,
@@ -15,14 +15,15 @@ import { providePrimeNG } from 'primeng/config';
 
 import { routes } from './app.routes';
 import { InMemoryDataService } from './infrastructure/fake-backend/in-memory-data.service';
+import { authInterceptor } from './infrastructure/interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(),
-    provideAnimationsAsync('animations'),
+    provideHttpClient(withInterceptors([authInterceptor])),
+    provideAnimationsAsync(),
     providePrimeNG({
       theme: {
         preset: Aura,
