@@ -13,15 +13,17 @@ export class NotificationResponse {
   severity!: NotificationSeverityEnum;
 
   static converter(dados: NotificationResponse[]): Notification[] {
-    return dados.map((item) => ({
-      id: item.id,
-      type: item.type,
-      title: item.title,
-      message: item.message,
-      timestamp: item.timestamp,
-      read: item.read,
-      icon: item.icon,
-      severity: item.severity,
-    }));
+    return dados
+      .map((item) => ({
+        id: item.id,
+        type: item.type,
+        title: item.title,
+        message: item.message,
+        timestamp: item.timestamp,
+        read: item.read,
+        icon: item.icon,
+        severity: item.severity,
+      }))
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
   }
 }
