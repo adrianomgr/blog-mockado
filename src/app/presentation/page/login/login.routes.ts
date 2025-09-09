@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { canDeactivateGuard } from '@app/infrastructure/guard';
 
 export const loginRoutes: Routes = [
   {
@@ -12,5 +13,6 @@ export const loginRoutes: Routes = [
     loadComponent: () =>
       import('./sing-up-view/sing-up-view.component').then((c) => c.SingUpViewComponent),
     title: 'Cadastro',
+    canDeactivate: [canDeactivateGuard],
   },
 ];

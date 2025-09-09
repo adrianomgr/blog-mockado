@@ -12,9 +12,11 @@ import { SignUpFacadeService } from '@app/abstraction/sign-up.facade.service';
 import { Constants } from '@app/constants';
 import { ProfileEnum } from '@app/domain/enum/profile.enum';
 import { UserCreate } from '@app/domain/model/user-create';
-import { MessageService } from 'primeng/api';
+import { CanComponentDeactivate } from '@app/infrastructure/guard';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -34,12 +36,13 @@ import { ToastModule } from 'primeng/toast';
     FloatLabelModule,
     SelectModule,
     ToastModule,
+    ConfirmDialogModule,
   ],
-  providers: [MessageService],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './sing-up-view.component.html',
   styleUrls: ['./sing-up-view.component.scss'],
 })
-export class SingUpViewComponent {
+export class SingUpViewComponent implements CanComponentDeactivate {
   signupForm: FormGroup<{
     name: FormControl<string>;
     username: FormControl<string>;
@@ -49,6 +52,7 @@ export class SingUpViewComponent {
     role: FormControl<string>;
   }>;
   isLoading = false;
+  private formSubmitted = false;
 
   roleOptions = Object.entries(Constants.descricoesProfile).map(([key, value]) => ({
     value: key as ProfileEnum,
@@ -59,7 +63,8 @@ export class SingUpViewComponent {
     private readonly fbr: FormBuilder,
     private readonly router: Router,
     private readonly signUpFacade: SignUpFacadeService,
-    private readonly messageService: MessageService
+    private readonly messageService: MessageService,
+    private readonly confirmationService: ConfirmationService
   ) {
     this.signupForm = this.fbr.nonNullable.group({
       name: this.fbr.nonNullable.control('', [Validators.required, Validators.minLength(2)]),
@@ -68,6 +73,31 @@ export class SingUpViewComponent {
       password: this.fbr.nonNullable.control('', [Validators.required, Validators.minLength(6)]),
       confirmPassword: this.fbr.nonNullable.control('', [Validators.required]),
       role: this.fbr.nonNullable.control('', [Validators.required]),
+    });
+  }
+
+  canDeactivate(): boolean | Promise<boolean> {
+    if (this.formSubmitted || this.signupForm.pristine) {
+      return true;
+    }
+
+    // Se há alterações não salvas, mostra dialog de confirmação
+    return new Promise((resolve) => {
+      this.confirmationService.confirm({
+        message: 'Você tem alterações não salvas. Tem certeza de que deseja sair desta página?',
+        header: 'Confirmar Saída',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: 'Sim, sair',
+        rejectLabel: 'Cancelar',
+        acceptButtonStyleClass: 'p-button-danger',
+        rejectButtonStyleClass: 'p-button-secondary',
+        accept: () => {
+          resolve(true);
+        },
+        reject: () => {
+          resolve(false);
+        },
+      });
     });
   }
 
@@ -81,6 +111,7 @@ export class SingUpViewComponent {
 
       this.signUpFacade.createUser(createUser).subscribe(() => {
         this.isLoading = false;
+        this.formSubmitted = true; // Marca que o formulário foi enviado com sucesso
         this.messageService.add({
           severity: 'success',
           summary: 'Sucesso',
