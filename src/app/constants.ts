@@ -8,14 +8,12 @@ export class Constants {
     [ProfileEnum.ADMIN]: 'Administrador',
     [ProfileEnum.AUTHOR]: 'Autor',
     [ProfileEnum.EDITOR]: 'Editor',
-    [ProfileEnum.SUBSCRIBER]: 'Assinante',
   };
 
   public static readonly severityProfile = {
     [ProfileEnum.ADMIN]: TagSeverityEnum.DANGER,
     [ProfileEnum.AUTHOR]: TagSeverityEnum.SUCCESS,
-    [ProfileEnum.EDITOR]: TagSeverityEnum.WARNING,
-    [ProfileEnum.SUBSCRIBER]: TagSeverityEnum.INFO,
+    [ProfileEnum.EDITOR]: TagSeverityEnum.INFO,
   };
 
   public static readonly descricoesPostStatus = {

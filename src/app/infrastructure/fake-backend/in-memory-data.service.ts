@@ -116,13 +116,37 @@ export class InMemoryDataService implements InMemoryDbService {
     const userId = +reqInfo.id!;
     const body = reqInfo.utils.getJsonBody(reqInfo.req);
 
+    console.log('🔄 [Update User] ID:', userId);
+    console.log('🔄 [Update User] Body received:', body);
+
     try {
-      this.userStore.updateUser({ ...body, id: userId });
+      // Buscar o usuário existente para preservar dados não editáveis
+      const existingUser = this.userStore.getUserById(userId);
+      if (!existingUser) {
+        return this.createResponse(reqInfo, 404, { error: 'Usuário não encontrado' });
+      }
+
+      console.log('👤 [Update User] Existing user:', existingUser);
+
+      // Mesclar dados existentes com as atualizações, preservando createdAt
+      const updatedUser = {
+        ...existingUser,
+        ...body,
+        id: userId,
+        createdAt: existingUser.createdAt, // Preserva a data de criação
+        // Se não foi enviada uma nova senha, preserva a existente
+        password: body.password || existingUser.password,
+      };
+
+      console.log('✅ [Update User] Updated user:', updatedUser);
+
+      this.userStore.updateUser(updatedUser);
       return this.createResponse(reqInfo, 200, {
         success: true,
         message: 'Usuário atualizado com sucesso',
       });
     } catch (error: unknown) {
+      console.error('❌ [Update User] Error:', error);
       const httpError = error as HttpErrorResponse;
       return this.createResponse(reqInfo, 400, { error: httpError.message });
     }

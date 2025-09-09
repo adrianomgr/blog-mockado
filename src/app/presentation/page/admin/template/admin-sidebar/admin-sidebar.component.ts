@@ -26,6 +26,11 @@ export class AdminSidebarComponent {
       routerLink: ['/admin/users'],
     },
     {
+      label: 'Meu Perfil',
+      icon: 'pi pi-user',
+      routerLink: ['/admin/profile'],
+    },
+    {
       label: 'Voltar ao Blog',
       icon: 'pi pi-external-link',
       routerLink: ['/'],

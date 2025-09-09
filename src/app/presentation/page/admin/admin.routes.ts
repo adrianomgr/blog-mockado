@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { canDeactivateGuard } from '@app/infrastructure/guard';
 
 export const adminRoutes: Routes = [
   {
@@ -25,6 +26,11 @@ export const adminRoutes: Routes = [
         path: 'users',
         loadComponent: () =>
           import('./users-view/users-view.component').then((m) => m.UsersViewComponent),
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./profile/profile.component').then((m) => m.ProfileComponent),
+        canDeactivate: [canDeactivateGuard],
       },
     ],
   },

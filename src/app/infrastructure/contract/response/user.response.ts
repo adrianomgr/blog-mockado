@@ -42,7 +42,6 @@ export class UserResponse {
     statistics.adminCount = dados.filter((user) => user.role === 'admin').length;
     statistics.editorCount = dados.filter((user) => user.role === 'editor').length;
     statistics.authorCount = dados.filter((user) => user.role === 'author').length;
-    statistics.subscriberCount = dados.filter((user) => user.role === 'subscriber').length;
 
     return statistics;
   }

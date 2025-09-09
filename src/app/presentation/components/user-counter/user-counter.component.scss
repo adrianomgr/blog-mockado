@@ -40,6 +40,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
+    margin-bottom: 24px;
   }
 
   .stat-item {
@@ -56,6 +57,25 @@
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    &.total {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(79, 70, 229, 0.1) 100%);
+      border-color: rgba(99, 102, 241, 0.2);
+
+      .stat-icon {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        color: white;
+      }
+
+      &:hover {
+        background: linear-gradient(
+          135deg,
+          rgba(99, 102, 241, 0.15) 0%,
+          rgba(79, 70, 229, 0.15) 100%
+        );
+        border-color: rgba(99, 102, 241, 0.3);
+      }
     }
 
     &.admin {
@@ -112,25 +132,6 @@
           rgba(21, 128, 61, 0.15) 100%
         );
         border-color: rgba(34, 197, 94, 0.3);
-      }
-    }
-
-    &.subscriber {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(29, 78, 216, 0.1) 100%);
-      border-color: rgba(59, 130, 246, 0.2);
-
-      .stat-icon {
-        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-        color: white;
-      }
-
-      &:hover {
-        background: linear-gradient(
-          135deg,
-          rgba(59, 130, 246, 0.15) 0%,
-          rgba(29, 78, 216, 0.15) 100%
-        );
-        border-color: rgba(59, 130, 246, 0.3);
       }
     }
 
@@ -244,107 +245,6 @@
           strong {
             color: var(--p-text-color);
             font-weight: 600;
-          }
-        }
-      }
-    }
-  }
-
-  // Responsividade
-  @media (max-width: 768px) {
-    .stats-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .header {
-      flex-direction: column;
-      gap: 10px;
-      align-items: flex-start;
-    }
-
-    .stat-item {
-      padding: 12px;
-
-      .stat-icon {
-        width: 40px;
-        height: 40px;
-
-        .pi {
-          font-size: 18px;
-        }
-      }
-
-      .stat-info {
-        .stat-number {
-          font-size: 24px;
-        }
-      }
-    }
-
-    .profile-info {
-      .profile-info-header {
-        h4 {
-          font-size: 14px;
-        }
-      }
-
-      .profile-text {
-        padding: 10px;
-
-        .profile-list {
-          li {
-            font-size: 12px;
-
-            .pi {
-              font-size: 13px;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  @media (max-width: 480px) {
-    .header {
-      h3 {
-        font-size: 16px;
-      }
-
-      .total-badge {
-        font-size: 12px;
-        padding: 4px 8px;
-      }
-    }
-
-    .stat-item {
-      .stat-info {
-        .stat-number {
-          font-size: 20px;
-        }
-
-        .stat-label {
-          font-size: 11px;
-        }
-      }
-    }
-
-    .profile-info {
-      .profile-info-header {
-        h4 {
-          font-size: 13px;
-        }
-      }
-
-      .profile-text {
-        padding: 8px;
-
-        .profile-list {
-          li {
-            font-size: 11px;
-
-            .pi {
-              font-size: 12px;
-            }
           }
         }
       }

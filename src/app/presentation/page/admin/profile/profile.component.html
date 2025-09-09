@@ -1,0 +1,182 @@
+<div class="profile-wrapper">
+  <p-card class="profile-card">
+    <ng-template pTemplate="header">
+      <div class="card-header">
+        <h1>Meu Perfil</h1>
+        <p class="subtitle">Atualize suas informações pessoais</p>
+      </div>
+    </ng-template>
+
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
+      <div class="my-8">
+        <p-floatlabel>
+          <input
+            pInputText
+            class="w-full"
+            id="name"
+            formControlName="name"
+            [class.ng-invalid]="
+              profileForm.get('name')?.invalid && profileForm.get('name')?.touched
+            "
+          />
+          <label for="name">Nome</label>
+        </p-floatlabel>
+        <div
+          *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched"
+          class="error-message"
+        >
+          <small *ngIf="profileForm.get('name')?.errors?.['required']">Nome é obrigatório.</small>
+          <small *ngIf="profileForm.get('name')?.errors?.['minlength']">
+            Nome deve ter pelo menos 2 caracteres.
+          </small>
+        </div>
+      </div>
+
+      <div class="my-8">
+        <p-floatlabel>
+          <input
+            pInputText
+            class="w-full"
+            id="username"
+            formControlName="username"
+            [class.ng-invalid]="
+              profileForm.get('username')?.invalid && profileForm.get('username')?.touched
+            "
+          />
+          <label for="username">Nome de usuário</label>
+        </p-floatlabel>
+        <div
+          *ngIf="profileForm.get('username')?.invalid && profileForm.get('username')?.touched"
+          class="error-message"
+        >
+          <small *ngIf="profileForm.get('username')?.errors?.['required']"
+            >Nome de usuário é obrigatório.</small
+          >
+          <small *ngIf="profileForm.get('username')?.errors?.['minlength']">
+            Nome de usuário deve ter pelo menos 4 caracteres.
+          </small>
+        </div>
+      </div>
+
+      <div class="my-8">
+        <p-floatlabel>
+          <input
+            pInputText
+            class="w-full"
+            id="email"
+            type="email"
+            formControlName="email"
+            [class.ng-invalid]="
+              profileForm.get('email')?.invalid && profileForm.get('email')?.touched
+            "
+          />
+          <label for="email">E-mail</label>
+        </p-floatlabel>
+        <div
+          *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+          class="error-message"
+        >
+          <small *ngIf="profileForm.get('email')?.errors?.['required']"
+            >E-mail é obrigatório.</small
+          >
+          <small *ngIf="profileForm.get('email')?.errors?.['email']">E-mail deve ser válido.</small>
+        </div>
+      </div>
+
+      <div class="my-8">
+        <p-floatlabel>
+          <p-select
+            [options]="roleOptions"
+            optionLabel="label"
+            optionValue="value"
+            class="w-full"
+            id="role"
+            formControlName="role"
+            [class.ng-invalid]="
+              profileForm.get('role')?.invalid && profileForm.get('role')?.touched
+            "
+          />
+          <label for="role">Perfil</label>
+        </p-floatlabel>
+        <div
+          *ngIf="profileForm.get('role')?.invalid && profileForm.get('role')?.touched"
+          class="error-message"
+        >
+          <small *ngIf="profileForm.get('role')?.errors?.['required']">Perfil é obrigatório.</small>
+        </div>
+      </div>
+
+      <div class="password-section">
+        <h3>Alterar Senha</h3>
+        <p class="subtitle">Deixe em branco se não deseja alterar a senha</p>
+
+        <div class="my-8">
+          <p-floatlabel>
+            <p-password
+              class="block w-full"
+              inputStyleClass="w-full"
+              id="password"
+              formControlName="password"
+              [feedback]="false"
+              [toggleMask]="true"
+              [class.ng-invalid]="
+                profileForm.get('password')?.invalid && profileForm.get('password')?.touched
+              "
+            />
+            <label for="password">Nova Senha</label>
+          </p-floatlabel>
+          <div
+            *ngIf="profileForm.get('password')?.invalid && profileForm.get('password')?.touched"
+            class="error-message"
+          >
+            <small *ngIf="profileForm.get('password')?.errors?.['minlength']">
+              Senha deve ter pelo menos 6 caracteres.
+            </small>
+          </div>
+        </div>
+
+        <div class="my-8">
+          <p-floatlabel>
+            <p-password
+              class="block w-full"
+              inputStyleClass="w-full"
+              id="confirmPassword"
+              formControlName="confirmPassword"
+              [feedback]="false"
+              [toggleMask]="true"
+              [class.ng-invalid]="
+                (profileForm.get('confirmPassword')?.invalid &&
+                  profileForm.get('confirmPassword')?.touched) ||
+                (profileForm.value.password && !passwordsMatch())
+              "
+            />
+            <label for="confirmPassword">Confirmar Nova Senha</label>
+          </p-floatlabel>
+          <div
+            *ngIf="
+              profileForm.value.password &&
+              !passwordsMatch() &&
+              profileForm.get('confirmPassword')?.touched
+            "
+            class="error-message"
+          >
+            <small>As senhas não coincidem.</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <p-button
+          type="submit"
+          label="Atualizar Perfil"
+          [loading]="isLoading"
+          [disabled]="profileForm.invalid"
+          styleClass="update-btn"
+        ></p-button>
+      </div>
+    </form>
+  </p-card>
+</div>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>
