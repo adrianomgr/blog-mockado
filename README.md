@@ -1,59 +1,185 @@
-# BlogMockado
+# BlogMockado 📰
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.2.
+Um blog desenvolvido com Angular 20, implementando as melhores práticas de desenvolvimento frontend e arquitetura escalável.
 
-## Development server
+## 🚀 Tecnologias Utilizadas
 
-To start a local development server, run:
+- **Angular 20** - Versão mais nova do framework
+- **PrimeNG** - Biblioteca de componentes UI rica e acessível
+- **RxJS** - Programação reativa para gerenciamento de estado
+- **TypeScript** - Tipagem estática para maior robustez
+- **SCSS** - Estilização avançada com variáveis CSS
+- **Jest** - Framework de testes unitários
 
-```bash
-ng serve
+## 🏗️ Arquitetura e Padrões Implementados
+
+### ✅ Arquitetura Intuitiva
+
+- **Estrutura modular** organizada por domínio (domain, infrastructure, presentation)
+- **Separação clara de responsabilidades** com camadas bem definidas
+- **Componentes standalone** para melhor encapsulamento e reutilização
+
+### ✅ Reatividade Avançada
+
+- **Signals do Angular** para gerenciamento de estado reativo
+- **RxJS** para operações assíncronas e streams de dados
+- **Resources** para gerenciamento automático de requisições HTTP
+- **Computed signals** para cálculos derivados e otimização de performance
+
+### ✅ Abstração com Facade Pattern
+
+- **DashboardFacadeService** - Centraliza lógica de negócio do dashboard
+- **LoginFacadeService** - Gerencia autenticação e estados de login
+- **PostFacadeService** - Coordena operações de posts
+- **UserFacadeService** - Administra dados e operações de usuários
+
+### ✅ Sistema de Autenticação e Autorização
+
+- **Guards CanActivate** - Proteção de rotas baseada em autenticação
+- **Guards CanDeactivate** - Prevenção de perda de dados em formulários
+- **Interceptor de Token** - Injeção automática de tokens JWT nas requisições
+- **Gerenciamento de permissões** baseado em roles (Admin, Editor, Autor)
+
+### ✅ Backend Simulado Persistente
+
+- **Fake Backend Service** com armazenamento no estado usando BehaviorSubject
+- **Persistência de dados** entre sessões do navegador
+- **API REST simulada** com endpoints completos
+- **Handlers especializados** para usuários, posts e notificações
+
+### ✅ Otimizações de Performance
+
+- **Pipes customizados** (`userInitials`, `timeAgo`) evitando funções no template
+- **TrackBy functions** em loops para otimização do change detection
+- **Lazy loading** de módulos para carregamento sob demanda
+- **OnPush change detection** strategy
+
+### ✅ Compartilhamento e Reutilização
+
+- **Componentes genéricos** (`dashboard-stat-card`) para diferentes contextos
+- **Biblioteca de componentes** compartilhados
+- **Mixins SCSS** para estilos reutilizáveis
+- **Constantes centralizadas** para configuração
+
+## 📁 Estrutura do Projeto
+
+```
+src/
+├── app/
+│   ├── abstraction/           # Camada de abstração (Facade Services)
+│   ├── domain/               # Regras de negócio e modelos
+│   │   ├── enum/            # Enums da aplicação
+│   │   └── model/           # Interfaces e tipos
+│   ├── infrastructure/       # Camada de infraestrutura
+│   │   ├── api/            # Serviços de API
+│   │   ├── contract/        # Contratos de requisição/resposta
+│   │   ├── fake-backend/    # Backend simulado
+│   │   └── guard/          # Guards de rota
+│   └── presentation/        # Camada de apresentação
+│       ├── components/      # Componentes reutilizáveis
+│       ├── directive/       # Diretivas customizadas
+│       ├── page/           # Páginas da aplicação
+│       └── pipe/           # Pipes customizados
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 🧪 Testes
 
-## Code scaffolding
+### Configuração de Testes
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- **Jest** como framework de testes
+- **Testes unitários** para serviços e componentes
+- **Mocks** para dependências externas
+- **Testes de integração** para fluxos completos
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+### Executando Testes
 
 ```bash
-ng build
+# Testes unitários
+npm test
+
+# Testes com coverage
+npm run test:coverage
+
+# Testes e2e (quando implementado)
+npm run e2e
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 🚀 Como Executar
 
-## Running unit tests
+### Pré-requisitos
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+- Node.js 18+
+- npm ou yarn
+
+### Instalação
 
 ```bash
-ng test
+# Clonar o repositório
+git clone https://github.com/adrianomgr/blog-mockado.git
+
+# Entrar no diretório
+cd blog-mockado
+
+# Instalar dependências
+npm install
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### Desenvolvimento
 
 ```bash
-ng e2e
+# Iniciar servidor de desenvolvimento
+npm start
+
+# A aplicação estará disponível em http://localhost:4200
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Build de Produção
 
-## Additional Resources
+```bash
+# Build otimizado para produção
+npm run build
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+# Os arquivos serão gerados em dist/blog-mockado
+```
+
+## 🎯 Funcionalidades Implementadas
+
+### ✅ Autenticação
+
+- Login/logout com persistência
+- Criação de usuários
+- Controle de sessão
+
+### ✅ Gerenciamento de Posts
+
+- CRUD completo de posts
+- Sistema de tags
+- Rascunhos e publicação
+- Estatísticas de visualização
+
+### ✅ Gerenciamento de Usuários
+
+- Perfis de usuário (Admin, Editor, Autor)
+- Controle de permissões
+- Estatísticas de usuários
+
+### ✅ Dashboard Administrativo
+
+- Métricas
+- Gestão de postagens
+- Gestão de usuários
+- Notificações do sistema
+
+## 🔄 Melhorias Futuras
+
+### 📋 Pendências
+
+- [ ] **Criação de diretivas customizadas** para comportamentos reutilizáveis
+- [ ] **Cobertura completa de testes** com Jest (atualmente parcial)
+- [ ] **Internacionalização (i18n)** para múltiplos idiomas
+
+## 👨‍💻 Autor
+
+**Adriano Marques** - [GitHub](https://github.com/adrianomgr)
+
+---
