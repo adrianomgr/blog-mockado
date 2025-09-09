@@ -17,8 +17,12 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
+import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
@@ -37,10 +41,14 @@ import { finalize } from 'rxjs';
     ConfirmDialogModule,
     ToastModule,
     InputTextModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     PasswordModule,
     TagModule,
     TooltipModule,
     AvatarModule,
+    FloatLabelModule,
+    SelectModule,
     UserInitialsPipe,
     RoleLabelPipe,
     RoleSeverityPipe,

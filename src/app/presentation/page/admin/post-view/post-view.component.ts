@@ -12,7 +12,11 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ToastModule } from 'primeng/toast';
@@ -26,10 +30,14 @@ import { ToastModule } from 'primeng/toast';
     CardModule,
     TableModule,
     InputTextModule,
+    InputGroupModule,
+    InputGroupAddonModule,
     DialogModule,
     TagModule,
     ToastModule,
     ConfirmDialogModule,
+    FloatLabelModule,
+    SelectModule,
     PostStatusLabelPipe,
     PostStatusSeverityPipe,
   ],
@@ -43,6 +51,11 @@ export class PostViewComponent implements OnInit {
   postForm!: FormGroup;
   selectedPost: Post | null = null;
   loading: boolean = false;
+
+  statusOptions = [
+    { label: 'Rascunho', value: 'draft' },
+    { label: 'Publicado', value: 'published' },
+  ];
 
   constructor(
     private readonly fb: FormBuilder,

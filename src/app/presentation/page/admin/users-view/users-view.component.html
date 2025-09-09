@@ -17,15 +17,17 @@
       >
         <ng-template pTemplate="caption">
           <div class="table-header">
-            <span class="p-input-icon-left">
-              <i class="pi pi-search"></i>
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="pi pi-search"></i>
+              </p-inputgroup-addon>
               <input
                 pInputText
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 placeholder="Buscar usuários..."
               />
-            </span>
+            </p-inputgroup>
           </div>
         </ng-template>
 
@@ -83,53 +85,69 @@
     [closable]="true"
   >
     <form [formGroup]="userForm" (ngSubmit)="saveUser()">
-      <div class="form-grid">
-        <div class="form-field">
-          <label for="name">Nome Completo *</label>
-          <input id="name" type="text" pInputText formControlName="name" class="w-full" />
+      <div class="form-grid mt-4">
+        <div class="form-field my-2">
+          <p-floatlabel>
+            <input id="name" type="text" pInputText formControlName="name" class="w-full" />
+            <label for="name">Nome Completo *</label>
+          </p-floatlabel>
         </div>
 
-        <div class="form-field">
-          <label for="username">Username *</label>
-          <input id="username" type="text" pInputText formControlName="username" class="w-full" />
+        <div class="form-field my-2">
+          <p-floatlabel>
+            <input id="username" type="text" pInputText formControlName="username" class="w-full" />
+            <label for="username">Username *</label>
+          </p-floatlabel>
         </div>
 
-        <div class="form-field">
-          <label for="email">Email *</label>
-          <input id="email" type="email" pInputText formControlName="email" class="w-full" />
+        <div class="form-field my-2">
+          <p-floatlabel>
+            <input id="email" type="email" pInputText formControlName="email" class="w-full" />
+            <label for="email">Email *</label>
+          </p-floatlabel>
         </div>
 
-        <div class="form-field">
-          <label for="role">Função *</label>
-          <select id="role" formControlName="role" class="p-inputtext w-full">
-            <option value="admin">Administrador</option>
-            <option value="editor">Editor</option>
-            <option value="author">Autor</option>
-            <option value="subscriber">Assinante</option>
-          </select>
+        <div class="form-field my-2">
+          <p-floatlabel>
+            <p-select
+              id="role"
+              formControlName="role"
+              [options]="roleOptions"
+              class="w-full"
+            ></p-select>
+            <label for="role">Função *</label>
+          </p-floatlabel>
         </div>
 
         @if (!selectedUser) {
-        <div class="form-field">
-          <label for="password">Senha *</label>
-          <p-password
-            id="password"
-            formControlName="password"
-            [feedback]="false"
-            [toggleMask]="true"
-            class="w-full"
-          ></p-password>
+        <div class="form-field my-2">
+          <p-floatlabel>
+            <p-password
+              id="password"
+              class="block w-full"
+              inputId="password"
+              formControlName="password"
+              [feedback]="true"
+              [toggleMask]="true"
+              inputStyleClass="w-full"
+            ></p-password>
+            <label for="password">Senha *</label>
+          </p-floatlabel>
         </div>
 
-        <div class="form-field">
-          <label for="confirmPassword">Confirmar Senha *</label>
-          <p-password
-            id="confirmPassword"
-            formControlName="confirmPassword"
-            [feedback]="false"
-            [toggleMask]="true"
-            class="w-full"
-          ></p-password>
+        <div class="form-field my-2">
+          <p-floatlabel>
+            <p-password
+              id="confirmPassword"
+              class="block w-full"
+              inputId="confirmPassword"
+              formControlName="confirmPassword"
+              [feedback]="false"
+              [toggleMask]="true"
+              inputStyleClass="w-full"
+            ></p-password>
+            <label for="confirmPassword">Confirmar Senha *</label>
+          </p-floatlabel>
           @if (userForm.get('confirmPassword')?.touched && userForm.hasError('passwordMismatch')) {
           <small class="p-error"> As senhas não coincidem </small>
           }

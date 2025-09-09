@@ -23,25 +23,27 @@
       >
         <ng-template pTemplate="caption">
           <div class="table-header">
-            <span class="p-input-icon-left">
-              <i class="pi pi-search"></i>
+            <p-inputgroup>
+              <p-inputgroup-addon>
+                <i class="pi pi-search"></i>
+              </p-inputgroup-addon>
               <input
                 pInputText
                 type="text"
                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
                 placeholder="Buscar posts..."
               />
-            </span>
+            </p-inputgroup>
           </div>
         </ng-template>
 
         <ng-template pTemplate="header">
           <tr>
-            <th>Título</th>
-            <th>Autor</th>
-            <th>Status</th>
-            <th>Data</th>
-            <th>Ações</th>
+            <th scope="col">Título</th>
+            <th scope="col">Autor</th>
+            <th scope="col">Status</th>
+            <th scope="col">Data</th>
+            <th scope="col">Ações</th>
           </tr>
         </ng-template>
 
@@ -87,27 +89,42 @@
     [closable]="true"
   >
     <form [formGroup]="postForm" (ngSubmit)="savePost()">
-      <div class="form-grid">
-        <div class="form-field">
-          <label for="title">Título *</label>
-          <input id="title" type="text" pInputText formControlName="title" class="w-full" />
+      <div class="form-grid mt-4">
+        <div class="form-field my-2">
+          <p-floatlabel>
+            <input id="title" type="text" pInputText formControlName="title" class="w-full" />
+            <label for="title">Título *</label>
+          </p-floatlabel>
         </div>
 
-        <div class="field">
-          <label for="status">Status</label>
-          <select id="status" formControlName="status" class="p-inputtext w-full">
-            <option value="draft">Rascunho</option>
-            <option value="published">Publicado</option>
-          </select>
+        <div class="field my-2">
+          <p-floatlabel>
+            <p-select
+              id="status"
+              formControlName="status"
+              [options]="statusOptions"
+              class="w-full"
+            ></p-select>
+            <label for="status">Status</label>
+          </p-floatlabel>
         </div>
 
-        <div class="form-field full-width">
-          <label for="content">Conteúdo *</label>
-          <textarea id="content" formControlName="content" rows="10" class="w-full"></textarea>
+        <div class="form-field full-width my-2">
+          <label for="content" class="block text-sm font-medium mb-2">Conteúdo *</label>
+          <textarea
+            id="content"
+            formControlName="content"
+            rows="10"
+            class="w-full p-inputtext"
+            placeholder="Digite o conteúdo do post..."
+          >
+          </textarea>
         </div>
 
-        <div class="form-field full-width">
-          <label for="tags">Tags (separadas por vírgula)</label>
+        <div class="form-field full-width my-2">
+          <label for="tags" class="block text-sm font-medium mb-2"
+            >Tags (separadas por vírgula)</label
+          >
           <input
             id="tags"
             type="text"
