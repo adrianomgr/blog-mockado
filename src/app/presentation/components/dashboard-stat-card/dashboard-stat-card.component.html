@@ -1,0 +1,25 @@
+<div class="stat-card">
+  <div class="header">
+    <h3>
+      <i [class]="icon"></i>
+      {{ title }}
+    </h3>
+    <span class="total-badge">{{ totalBadge }} Total</span>
+  </div>
+
+  <div class="stats-grid">
+    @for (stat of stats; track stat) {
+    <div class="stat-item">
+      <div class="stat-icon">
+        <i [class]="stat.icon"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-number">{{ stat.value }}</span>
+        <span class="stat-label">{{ stat.label }}</span>
+      </div>
+    </div>
+    }
+  </div>
+
+  <ng-content></ng-content>
+</div>

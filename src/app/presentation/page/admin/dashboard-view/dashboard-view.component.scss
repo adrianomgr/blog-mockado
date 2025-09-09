@@ -162,3 +162,148 @@
     }
   }
 }
+
+// Seção de Tags
+.tags-section {
+  border-top: 1px solid var(--p-surface-border);
+  padding-top: 20px;
+
+  .tags-header {
+    margin-bottom: 16px;
+
+    h4 {
+      margin: 0;
+      color: var(--p-text-color);
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .pi {
+        color: var(--p-primary-color);
+        font-size: 18px;
+      }
+    }
+  }
+
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    .tag-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      background: var(--p-primary-50);
+      color: var(--p-primary-color);
+      border: 1px solid var(--p-primary-200);
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+
+      .pi {
+        font-size: 10px;
+      }
+
+      &:hover {
+        background: var(--p-primary-100);
+        border-color: var(--p-primary-300);
+        transform: translateY(-1px);
+      }
+    }
+
+    .tag-more {
+      padding: 6px 12px;
+      background: var(--p-surface-100);
+      color: var(--p-text-secondary-color);
+      border: 1px solid var(--p-surface-300);
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+      font-style: italic;
+    }
+  }
+}
+
+// Seção de informações sobre perfis
+.profile-info {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--p-surface-border);
+
+  .profile-info-header {
+    margin-bottom: 12px;
+
+    h4 {
+      margin: 0;
+      color: var(--p-text-color);
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .pi {
+        color: var(--p-primary-color);
+        font-size: 18px;
+      }
+    }
+  }
+
+  .profile-text {
+    padding: 12px;
+    background: var(--p-surface-50);
+    border: 1px solid var(--p-surface-200);
+    border-radius: 8px;
+
+    .profile-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      li {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--p-text-secondary-color);
+
+        .pi {
+          margin-top: 2px;
+          font-size: 14px;
+          width: 16px;
+          flex-shrink: 0;
+
+          &.pi-crown {
+            color: #ef4444;
+          }
+
+          &.pi-pencil {
+            color: #f59e0b;
+          }
+
+          &.pi-user-edit {
+            color: #22c55e;
+          }
+
+          &.pi-bookmark {
+            color: #3b82f6;
+          }
+        }
+
+        strong {
+          color: var(--p-text-color);
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

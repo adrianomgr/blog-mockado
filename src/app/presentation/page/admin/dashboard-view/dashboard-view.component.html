@@ -8,12 +8,69 @@
   <div class="stats-grid">
     <!-- Estatísticas de posts -->
     <div class="stats-card">
-      <app-post-statistics></app-post-statistics>
+      <app-dashboard-stat-card
+        [title]="'Estatísticas dos Posts'"
+        [icon]="'pi pi-chart-bar'"
+        [totalBadge]="postStats.totalPosts || 0"
+        [stats]="getPostStatItems()"
+      >
+        <!-- Footer customizado para posts -->
+        @if (postStats.uniqueTags && postStats.uniqueTags.length > 0) {
+        <div class="tags-section">
+          <div class="tags-header">
+            <h4>
+              <i class="pi pi-bookmark"></i>
+              Tags
+            </h4>
+          </div>
+          <div class="tags-container">
+            @for (tag of postStats.uniqueTags; track tag) {
+            <span class="tag-item">
+              <i class="pi pi-tag"></i>
+              {{ tag }}
+            </span>
+            }
+          </div>
+        </div>
+        }
+      </app-dashboard-stat-card>
     </div>
 
     <!-- Estatísticas de usuários -->
     <div class="stats-card">
-      <app-user-counter></app-user-counter>
+      <app-dashboard-stat-card
+        [title]="'Estatísticas de Usuários'"
+        [icon]="'pi pi-users'"
+        [totalBadge]="userStats.totalUsers"
+        [stats]="getUserStatItems()"
+      >
+        <!-- Footer customizado para usuários -->
+        <div class="profile-info">
+          <div class="profile-info-header">
+            <h4>
+              <i class="pi pi-info-circle"></i>
+              Informações sobre os perfis
+            </h4>
+          </div>
+          <div class="profile-text">
+            <ul class="profile-list">
+              <li>
+                <i class="pi pi-crown"></i>
+                <strong>Administrador:</strong> Possui controle total do sistema
+              </li>
+              <li>
+                <i class="pi pi-pencil"></i>
+                <strong>Editor:</strong> Responsável pela criação e edição de conteúdo
+              </li>
+              <li>
+                <i class="pi pi-user-edit"></i>
+                <strong>Autor:</strong> Escritor de conteúdo que pode criar, editar e publicar seus
+                próprios artigos
+              </li>
+            </ul>
+          </div>
+        </div>
+      </app-dashboard-stat-card>
     </div>
   </div>
 </div>
