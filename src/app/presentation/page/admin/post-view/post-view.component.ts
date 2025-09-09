@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { PermissionFacadeService } from '@app/abstraction/permission.facade.service';
 import { PostFacadeService } from '@app/abstraction/post.facade.service';
 import { Post } from '@app/domain/model/post';
 import { PostCreate } from '@app/domain/model/post-create';
@@ -52,6 +53,8 @@ export class PostViewComponent implements OnInit {
   selectedPost: Post | null = null;
   loading: boolean = false;
 
+  permissionService = inject(PermissionFacadeService);
+
   statusOptions = [
     { label: 'Rascunho', value: 'draft' },
     { label: 'Publicado', value: 'published' },
@@ -71,20 +74,9 @@ export class PostViewComponent implements OnInit {
 
   private loadPosts() {
     this.loading = true;
-    this.postFacade.getAllPosts().subscribe({
-      next: (posts: Post[]) => {
-        this.posts = posts;
-        this.loading = false;
-      },
-      error: (error: any) => {
-        console.error('Erro ao carregar posts:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erro',
-          detail: 'Erro ao carregar posts',
-        });
-        this.loading = false;
-      },
+    this.postFacade.getAllPosts().subscribe((posts: Post[]) => {
+      this.posts = posts;
+      this.loading = false;
     });
   }
 
@@ -98,6 +90,16 @@ export class PostViewComponent implements OnInit {
   }
 
   showCreateDialog() {
+    // Verifica se tem permissão para criar posts
+    if (!this.permissionService.canCreatePost()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Acesso Negado',
+        detail: 'Você não tem permissão para criar posts',
+      });
+      return;
+    }
+
     this.selectedPost = null;
     this.postForm.reset();
     this.postForm.patchValue({ status: 'draft' });
@@ -105,6 +107,16 @@ export class PostViewComponent implements OnInit {
   }
 
   editPost(post: Post) {
+    // Verifica se tem permissão para editar este post
+    if (!this.permissionService.canEditPost(post.authorId)) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Acesso Negado',
+        detail: 'Você não tem permissão para editar este post',
+      });
+      return;
+    }
+
     this.selectedPost = post;
     this.postForm.patchValue({
       title: post.title,
@@ -116,6 +128,16 @@ export class PostViewComponent implements OnInit {
   }
 
   deletePost(post: Post) {
+    // Verifica se tem permissão para deletar este post
+    if (!this.permissionService.canEditPost(post.authorId)) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Acesso Negado',
+        detail: 'Você não tem permissão para deletar este post',
+      });
+      return;
+    }
+
     this.confirmationService.confirm({
       message: `Tem certeza que deseja deletar o post "${post.title}"?`,
       header: 'Confirmar Exclusão',
@@ -143,12 +165,13 @@ export class PostViewComponent implements OnInit {
       const tags = formValue.tags ? formValue.tags.split(',').map((tag: string) => tag.trim()) : [];
 
       if (this.selectedPost) {
-        // Editar post existente
         const updateRequest = new UpdatePostRequest({
           title: formValue.title,
           content: formValue.content,
           status: formValue.status,
           tags,
+          authorId: this.selectedPost.authorId,
+          author: this.selectedPost.author,
         });
 
         this.postFacade.updatePost(this.selectedPost.id, updateRequest).subscribe(() => {

@@ -1,7 +1,12 @@
 <div class="users-management">
   <div class="page-header">
     <h1>Gerenciar Usuários</h1>
-    <p-button label="Novo Usuário" icon="pi pi-user-plus" (onClick)="showCreateDialog()"></p-button>
+    <p-button
+      label="Novo Usuário"
+      icon="pi pi-user-plus"
+      (onClick)="showCreateDialog()"
+      [disabled]="!permissionService.canCreateUser()"
+    ></p-button>
   </div>
 
   <p-card class="users-table-card">
@@ -62,6 +67,7 @@
                 [text]="true"
                 (onClick)="editUser(user)"
                 pTooltip="Editar"
+                [disabled]="!permissionService.canEditUser(user.id)"
               ></p-button>
               <p-button
                 icon="pi pi-trash"
@@ -69,6 +75,7 @@
                 [text]="true"
                 (onClick)="deleteUser(user)"
                 pTooltip="Deletar"
+                [disabled]="!permissionService.canDeleteUser(user.id)"
               ></p-button>
             </td>
           </tr>

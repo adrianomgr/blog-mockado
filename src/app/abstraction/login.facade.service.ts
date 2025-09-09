@@ -32,7 +32,6 @@ export class LoginFacadeService {
     return this.userApiService.getAllUsers().pipe(
       map(UserResponse.converterLista),
       catchError((erro: HttpErrorResponse) => {
-        console.error('Erro ao buscar usuários:', erro);
         return throwError(() => ErroResponse.converter(erro));
       })
     );

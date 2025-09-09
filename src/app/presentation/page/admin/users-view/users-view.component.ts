@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { PermissionFacadeService } from '@app/abstraction/permission.facade.service';
 import { UserFacadeService } from '@app/abstraction/user-facade.service';
 import { Constants } from '@app/constants';
 import { ProfileEnum } from '@app/domain/enum/profile.enum';
@@ -74,7 +75,8 @@ export class UsersViewComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly messageService: MessageService,
     private readonly confirmationService: ConfirmationService,
-    private readonly userFacade: UserFacadeService
+    private readonly userFacade: UserFacadeService,
+    readonly permissionService: PermissionFacadeService
   ) {}
 
   ngOnInit() {
@@ -108,6 +110,16 @@ export class UsersViewComponent implements OnInit {
   }
 
   editUser(user: User) {
+    // Verifica se tem permissão para editar este usuário
+    if (!this.permissionService.canEditUser(user.id)) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Acesso Negado',
+        detail: 'Você não tem permissão para editar este usuário',
+      });
+      return;
+    }
+
     this.selectedUser = user;
     this.userForm.patchValue({
       name: user.name,
@@ -124,6 +136,16 @@ export class UsersViewComponent implements OnInit {
   }
 
   deleteUser(user: User) {
+    // Verifica se tem permissão para deletar este usuário
+    if (!this.permissionService.canDeleteUser(user.id)) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Acesso Negado',
+        detail: 'Você não tem permissão para deletar este usuário',
+      });
+      return;
+    }
+
     this.confirmationService.confirm({
       message: `Tem certeza que deseja deletar o usuário "${user.name}"?`,
       header: 'Confirmar Exclusão',
@@ -146,6 +168,16 @@ export class UsersViewComponent implements OnInit {
   }
 
   showCreateDialog() {
+    // Verifica se tem permissão para criar usuários
+    if (!this.permissionService.canCreateUser()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Acesso Negado',
+        detail: 'Você não tem permissão para criar usuários',
+      });
+      return;
+    }
+
     this.selectedUser = null;
     this.isEditMode = false;
     this.userForm.reset();
@@ -173,19 +205,14 @@ export class UsersViewComponent implements OnInit {
           role: formValue.role,
         });
 
-        this.userFacade.updateUser(this.selectedUser.id, updateRequest).subscribe({
-          next: () => {
-            this.loadUsers();
-            this.hideDialog();
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Sucesso',
-              detail: 'Usuário atualizado com sucesso',
-            });
-          },
-          error: (error: any) => {
-            console.error('Erro ao atualizar usuário:', error);
-          },
+        this.userFacade.updateUser(this.selectedUser.id, updateRequest).subscribe(() => {
+          this.loadUsers();
+          this.hideDialog();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Sucesso',
+            detail: 'Usuário atualizado com sucesso',
+          });
         });
       } else {
         // Criar novo usuário

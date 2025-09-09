@@ -1,7 +1,12 @@
 <div class="post-management">
   <div class="page-header">
     <h1>Gerenciar Posts</h1>
-    <p-button label="Novo Post" icon="pi pi-plus" (onClick)="showCreateDialog()"></p-button>
+    <p-button
+      label="Novo Post"
+      icon="pi pi-plus"
+      (onClick)="showCreateDialog()"
+      [disabled]="!permissionService.canCreatePost()"
+    ></p-button>
   </div>
 
   <p-card class="posts-table-card">
@@ -65,6 +70,7 @@
                 [text]="true"
                 (onClick)="editPost(post)"
                 pTooltip="Editar"
+                [disabled]="!permissionService.canEditPost(post.authorId)"
               ></p-button>
               <p-button
                 icon="pi pi-trash"
@@ -72,6 +78,7 @@
                 [text]="true"
                 (onClick)="deletePost(post)"
                 pTooltip="Deletar"
+                [disabled]="!permissionService.canEditPost(post.authorId)"
               ></p-button>
             </td>
           </tr>
