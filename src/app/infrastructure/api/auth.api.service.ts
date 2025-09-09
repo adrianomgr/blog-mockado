@@ -23,6 +23,7 @@ export class AuthApiService {
   }
 
   private initializeAuth(): void {
+    this.logout();
     const token = this.getToken();
     if (token && !this.jwtHelper.isTokenExpired(token)) {
       const decodedToken: User = this.jwtHelper.decodeToken(token)!;

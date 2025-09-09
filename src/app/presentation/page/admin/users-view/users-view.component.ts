@@ -10,11 +10,13 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { finalize } from 'rxjs';
 
@@ -27,6 +29,8 @@ import { finalize } from 'rxjs';
     CardModule,
     TableModule,
     DialogModule,
+    ConfirmDialogModule,
+    ToastModule,
     InputTextModule,
     PasswordModule,
     TagModule,
@@ -130,6 +134,10 @@ export class UsersViewComponent implements OnInit {
       message: `Tem certeza que deseja deletar o usuário "${user.name}"?`,
       header: 'Confirmar Exclusão',
       icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Deletar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
       accept: () => {
         this.userFacade.deleteUser(user.id).subscribe(() => {
           this.loadUsers();

@@ -93,11 +93,19 @@ export class InMemoryDataService implements InMemoryDbService {
     const body = reqInfo.utils.getJsonBody(reqInfo.req);
 
     try {
-      this.userStore.addUser(body);
-      return this.createResponse(reqInfo, 201, {
-        success: true,
-        message: 'Usuário criado com sucesso',
-      });
+      // Gerar ID único baseado no maior ID existente
+      const currentUsers = this.userStore.currentUsers;
+      const maxId = currentUsers.length > 0 ? Math.max(...currentUsers.map((u) => u.id)) : 0;
+
+      // Criar usuário com ID e data de criação
+      const newUser = {
+        ...body,
+        id: maxId + 1,
+        createdAt: new Date().toISOString(),
+      };
+
+      this.userStore.addUser(newUser);
+      return this.createResponse(reqInfo, 201, newUser);
     } catch (error: unknown) {
       const httpError = error as HttpErrorResponse;
       return this.createResponse(reqInfo, 400, { error: httpError.message });
@@ -124,14 +132,17 @@ export class InMemoryDataService implements InMemoryDbService {
     const userId = +reqInfo.id!;
 
     try {
+      // Verificar se o usuário existe antes de tentar remover
+      const user = this.userStore.getUserById(userId);
+      if (!user) {
+        return this.createResponse(reqInfo, 404, { error: 'Usuário não encontrado' });
+      }
+
       this.userStore.removeUser(userId);
-      return this.createResponse(reqInfo, 200, {
-        success: true,
-        message: 'Usuário removido com sucesso',
-      });
+      return this.createResponse(reqInfo, 200, null);
     } catch (error: unknown) {
       const httpError = error as HttpErrorResponse;
-      return this.createResponse(reqInfo, 404, { error: httpError.message });
+      return this.createResponse(reqInfo, 500, { error: httpError.message });
     }
   }
 
