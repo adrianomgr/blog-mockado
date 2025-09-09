@@ -166,6 +166,7 @@ export class UsersViewComponent implements OnInit {
       if (this.isEditMode && this.selectedUser) {
         // Editar usuário existente
         const updateRequest = new UpdateUserRequest({
+          id: this.selectedUser.id,
           name: formValue.name,
           username: formValue.username,
           email: formValue.email,

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HeaderFacadeService } from '@app/abstraction/header.facade.service';
 import { User } from '@app/domain/model/user';
@@ -12,7 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-admin-header',
@@ -30,7 +30,7 @@ import { Subject, takeUntil } from 'rxjs';
   templateUrl: './admin-header.component.html',
   styleUrl: './admin-header.component.scss',
 })
-export class AdminHeaderComponent implements OnInit, OnDestroy {
+export class AdminHeaderComponent implements OnDestroy {
   currentUser: User | null = null;
   notificationCount = 0;
 
@@ -40,27 +40,23 @@ export class AdminHeaderComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly headerFacade: HeaderFacadeService,
     private readonly confirmationService: ConfirmationService
-  ) {}
+  ) {
+    // Effect para reagir às mudanças do resource getProfile
+    effect(() => {
+      const profileResource = this.headerFacade.getProfile;
 
-  ngOnInit(): void {
-    this.loadCurrentUser();
+      if (profileResource.hasValue()) {
+        const user = profileResource.value();
+        if (user) {
+          this.currentUser = user;
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  private loadCurrentUser(): void {
-    // Obtém o usuário atual do HeaderFacadeService
-    this.headerFacade.currentUser$.pipe(takeUntil(this.destroy$)).subscribe({
-      next: (user: User | null) => {
-        this.currentUser = user;
-      },
-      error: (error: any) => {
-        console.error('Erro ao carregar usuário do header:', error);
-      },
-    });
   }
   get currentUserName(): string {
     return this.currentUser?.name || 'Usuário';

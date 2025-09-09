@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ProfileFacadeService } from '@app/abstraction/profile.facade.service';
@@ -38,7 +38,7 @@ import { finalize } from 'rxjs';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
-export class ProfileComponent implements OnInit, CanComponentDeactivate {
+export class ProfileComponent implements CanComponentDeactivate {
   profileForm!: FormGroup;
 
   isLoading = false;
@@ -68,43 +68,30 @@ export class ProfileComponent implements OnInit, CanComponentDeactivate {
       },
       { validators: passwordMatchValidator() }
     );
-  }
 
-  ngOnInit(): void {
-    this.loadCurrentUser();
-  }
+    effect(() => {
+      const profileResource = this.profileFacade.getProfile;
 
-  loadCurrentUser(): void {
-    this.currentUser = this.profileFacade.getCurrentUser();
-    if (this.currentUser) {
-      this.profileForm.patchValue({
-        name: this.currentUser.name,
-        username: this.currentUser.username,
-        email: this.currentUser.email,
-        role: this.currentUser.role,
-      });
-    } else {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Erro',
-        detail: 'Usuário não encontrado. Faça login novamente.',
-      });
-      this.router.navigate(['/login']);
-    }
+      if (profileResource.hasValue()) {
+        const user = profileResource.value();
+        if (user) {
+          this.currentUser = user;
+          this.profileForm.patchValue({
+            name: user.name,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+          });
+        }
+      }
+    });
   }
 
   canDeactivate(): boolean | Promise<boolean> {
-    // Se o formulário foi enviado com sucesso, permite sair
-    if (this.formSubmitted) {
+    if (this.formSubmitted || this.profileForm.pristine) {
       return true;
     }
 
-    // Se o formulário não foi alterado, permite sair
-    if (this.profileForm.pristine) {
-      return true;
-    }
-
-    // Se há alterações não salvas, mostra dialog de confirmação
     return new Promise((resolve) => {
       this.confirmationService.confirm({
         message: 'Você tem alterações não salvas. Tem certeza de que deseja sair desta página?',
@@ -126,7 +113,6 @@ export class ProfileComponent implements OnInit, CanComponentDeactivate {
 
   onSubmit(): void {
     if (this.profileForm.valid && this.currentUser) {
-      // Verificar se as senhas coincidem quando uma nova senha é fornecida
       if (this.profileForm.value.password && !this.passwordsMatch()) {
         this.messageService.add({
           severity: 'error',
@@ -139,8 +125,6 @@ export class ProfileComponent implements OnInit, CanComponentDeactivate {
       this.isLoading = true;
       const formValues = this.profileForm.getRawValue();
 
-      console.log('📝 [Profile Update] Form values:', formValues);
-
       const updatedUser: User = {
         ...this.currentUser,
         name: formValues.name,
@@ -151,13 +135,8 @@ export class ProfileComponent implements OnInit, CanComponentDeactivate {
 
       // Só incluir a senha se ela foi preenchida
       if (formValues.password && formValues.password.trim() !== '') {
-        (updatedUser as any).password = formValues.password;
-        console.log('🔐 [Profile Update] Password will be updated');
-      } else {
-        console.log('🔐 [Profile Update] No password change');
+        updatedUser.password = formValues.password;
       }
-
-      console.log('👤 [Profile Update] User to update:', updatedUser);
 
       this.profileFacade
         .updateProfile(updatedUser)
@@ -170,18 +149,6 @@ export class ProfileComponent implements OnInit, CanComponentDeactivate {
               summary: 'Sucesso',
               detail:
                 'Perfil atualizado com sucesso! Você será redirecionado para fazer login novamente.',
-            });
-
-            setTimeout(() => {
-              this.router.navigate(['/login']);
-            }, 2000);
-          },
-          error: (error) => {
-            console.error('Erro ao atualizar perfil:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Erro',
-              detail: 'Erro ao atualizar perfil. Tente novamente.',
             });
           },
         });

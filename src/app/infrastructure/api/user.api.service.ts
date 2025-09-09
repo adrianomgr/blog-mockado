@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { CreateUserRequest } from '../contract/request/create-user.request';
 import { UpdateUserRequest } from '../contract/request/update-user.request';
 import { UserResponse } from '../contract/response/user.response';
+import { AuthApiService } from './auth.api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,16 +12,11 @@ import { UserResponse } from '../contract/response/user.response';
 export class UserApiService {
   private readonly apiUrl = '/api/users';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient, private readonly authApiService: AuthApiService) {}
 
   // Buscar todos os usuários
   getAllUsers(): Observable<UserResponse[]> {
     return this.http.get<UserResponse[]>(this.apiUrl);
-  }
-
-  // Buscar usuário por ID
-  getUserById(id: number): Observable<UserResponse> {
-    return this.http.get<UserResponse>(`${this.apiUrl}/${id}`);
   }
 
   // Criar novo usuário
