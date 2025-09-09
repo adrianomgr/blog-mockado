@@ -5,6 +5,7 @@ import { UserFacadeService } from '@app/abstraction/user-facade.service';
 import { User } from '@app/domain/model/user';
 import { CreateUserRequest } from '@app/infrastructure/contract/request/create-user.request';
 import { UpdateUserRequest } from '@app/infrastructure/contract/request/update-user.request';
+import { UserInitialsPipe } from '@app/presentation/pipe/user-initials.pipe';
 import { passwordMatchValidator } from '@app/presentation/validators';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
@@ -36,6 +37,7 @@ import { finalize } from 'rxjs';
     TagModule,
     TooltipModule,
     AvatarModule,
+    UserInitialsPipe,
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './users-view.component.html',
@@ -91,15 +93,6 @@ export class UsersViewComponent implements OnInit {
         this.users = users;
         this.loading = false;
       });
-  }
-
-  getUserInitials(name: string): string {
-    return name
-      .split(' ')
-      .map((word) => word.charAt(0))
-      .join('')
-      .toUpperCase()
-      .substring(0, 2);
   }
 
   formatDate(date: string | Date): string {

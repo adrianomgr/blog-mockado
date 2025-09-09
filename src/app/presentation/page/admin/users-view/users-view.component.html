@@ -44,11 +44,7 @@
         <ng-template pTemplate="body" let-user>
           <tr>
             <td>
-              <p-avatar
-                [label]="getUserInitials(user.name)"
-                shape="circle"
-                size="normal"
-              ></p-avatar>
+              <p-avatar [label]="user.name | userInitials" shape="circle" size="normal"></p-avatar>
             </td>
             <td>{{ user.name }}</td>
             <td>{{ user.username }}</td>
